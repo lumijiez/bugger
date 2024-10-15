@@ -97,8 +97,6 @@ public class GameScreen implements Screen {
         ParticleManager.getInstance().update(delta);
         player.render();
 
-
-
         ParticleManager.getInstance().render(spriteBatch);
 
         enemySpawnTimer += delta;

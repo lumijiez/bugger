@@ -12,14 +12,16 @@ public class SpaceBackground {
 
     private float[] starPositionsX;
     private float[] starPositionsY;
-    private int numStars = 1000; // Number of stars to generate
 
-    private float galaxyScrollSpeed = 0.1f; // Galaxy scroll speed
-    private float nebulaScrollSpeed = 0.05f; // Nebula scroll speed
-    private float starScrollSpeed = 0.2f; // Star scroll speed
+    private int numStars = 10000; // Number of stars to generate
 
-    private float galaxyOffset = 0;
-    private float nebulaOffset = 0;
+    // Speeds for different layers
+    private float galaxyScrollSpeedX = 0.2f; // Galaxy horizontal scroll speed
+    private float galaxyScrollSpeedY = 0.2f; // Galaxy vertical scroll speed
+    private float nebulaScrollSpeedX = 0.025f; // Nebula horizontal scroll speed
+    private float nebulaScrollSpeedY = 0.025f; // Nebula vertical scroll speed
+    private float starScrollSpeedX = 0.5f; // Star horizontal scroll speed
+    private float starScrollSpeedY = 0.5f; // Star vertical scroll speed
 
     public SpaceBackground() {
         starTexture = new Texture(Gdx.files.internal("images/star.png"));
@@ -29,9 +31,11 @@ public class SpaceBackground {
         starPositionsX = new float[numStars];
         starPositionsY = new float[numStars];
 
+        // Randomly place stars within a larger range to create dispersion
         for (int i = 0; i < numStars; i++) {
-            starPositionsX[i] = MathUtils.random(0, Gdx.graphics.getWidth());
-            starPositionsY[i] = MathUtils.random(0, Gdx.graphics.getHeight());
+            // Increase the range to make stars more dispersed
+            starPositionsX[i] = MathUtils.random(-Gdx.graphics.getWidth() * 10, Gdx.graphics.getWidth() * 10);
+            starPositionsY[i] = MathUtils.random(-Gdx.graphics.getHeight() * 10, Gdx.graphics.getHeight() * 10);
         }
     }
 
@@ -44,60 +48,79 @@ public class SpaceBackground {
         // Draw nebulae with parallax effect
         drawNebulae();
 
-        // Draw star particles
+        // Draw star particles with parallax effect
         drawStars();
 
         GameScreen.spriteBatch.end();
-
-        // Update offsets for parallax scrolling
-        updateOffsets();
     }
 
     private void drawStars() {
-        float starScale = 0.1f; // Scale factor for stars
+        float cameraX = GameScreen.cam.position.x;
+        float cameraY = GameScreen.cam.position.y;
+
+        // Adjust the star positions based on the camera's position
         for (int i = 0; i < numStars; i++) {
-            // Draw the star with scaling
-            GameScreen.spriteBatch.draw(starTexture, starPositionsX[i], starPositionsY[i],
-                starTexture.getWidth() * starScale / 2, // Origin X
-                starTexture.getHeight() * starScale / 2, // Origin Y
-                starTexture.getWidth() * starScale,      // Width
-                starTexture.getHeight() * starScale,     // Height
-                1,                                        // Scale X
-                1                                        // Scale Y
-            );                                       // Rotation
+            // Calculate new positions based on camera movement
+            float starX = starPositionsX[i] - cameraX * starScrollSpeedX; // Horizontal parallax
+            float starY = starPositionsY[i] - cameraY * starScrollSpeedY; // Vertical parallax
+
+            // Add a slight random offset to the star's position
+            float offsetX = MathUtils.random(-2f, 2f); // Change the offset range as needed
+            float offsetY = MathUtils.random(-2f, 2f); // Change the offset range as needed
+
+            // Define a scale factor for the stars
+            float starScale = 0.1f; // Adjust this value to make stars smaller or larger
+
+            // Calculate scaled dimensions
+            float scaledWidth = starTexture.getWidth() * starScale;
+            float scaledHeight = starTexture.getHeight() * starScale;
+
+            // Draw the star with the correct parameters
+            GameScreen.spriteBatch.draw(starTexture,
+                starX + offsetX,        // X position
+                starY + offsetY,        // Y position
+                scaledWidth,                      // Origin X
+                scaledHeight,                      // Origin Y
+                0,           // Scaled Width
+                0,          // Scaled Height
+                1,                      // Scale X (since we're already scaling)
+                1                       // Scale Y (since we're already scaling)
+            );
         }
     }
 
     private void drawGalaxies() {
-        float screenHeight = Gdx.graphics.getHeight();
-        float galaxyY = (float) (Gdx.graphics.getHeight() - galaxyTexture.getHeight()) / 2 + galaxyOffset;
+        float cameraX = GameScreen.cam.position.x;
+        float cameraY = GameScreen.cam.position.y;
+
+        // Determine Y positions for galaxies based on camera position and scroll speed
+        float galaxyY1 = (cameraY * galaxyScrollSpeedY) % galaxyTexture.getHeight() - galaxyTexture.getHeight();
+        float galaxyY2 = galaxyY1 + galaxyTexture.getHeight(); // Draw a second galaxy texture for seamless scrolling
+
+        // Draw galaxies with horizontal offset
+        float galaxyX1 = -cameraX * galaxyScrollSpeedX; // Horizontal position based on camera
+        float galaxyX2 = galaxyX1 + galaxyTexture.getWidth();
 
         // Draw the galaxy texture
-        GameScreen.spriteBatch.draw(galaxyTexture, 0, galaxyY);
-        GameScreen.spriteBatch.draw(galaxyTexture, 0, galaxyY + galaxyTexture.getHeight());
+        GameScreen.spriteBatch.draw(galaxyTexture, galaxyX1, galaxyY1);
+        GameScreen.spriteBatch.draw(galaxyTexture, galaxyX2, galaxyY1);
     }
 
     private void drawNebulae() {
-        float screenHeight = Gdx.graphics.getHeight();
-        float nebulaY = (float) (Gdx.graphics.getHeight() - nebulaTexture.getHeight()) / 2 + nebulaOffset;
+        float cameraX = GameScreen.cam.position.x;
+        float cameraY = GameScreen.cam.position.y;
+
+        // Determine Y positions for nebulae based on camera position and scroll speed
+        float nebulaY1 = (cameraY * nebulaScrollSpeedY) % nebulaTexture.getHeight() - nebulaTexture.getHeight();
+        float nebulaY2 = nebulaY1 + nebulaTexture.getHeight(); // Draw a second nebula texture for seamless scrolling
+
+        // Draw nebulae with horizontal offset
+        float nebulaX1 = -cameraX * nebulaScrollSpeedX; // Horizontal position based on camera
+        float nebulaX2 = nebulaX1 + nebulaTexture.getWidth();
 
         // Draw the nebula texture
-        GameScreen.spriteBatch.draw(nebulaTexture, 0, nebulaY);
-        GameScreen.spriteBatch.draw(nebulaTexture, 0, nebulaY + nebulaTexture.getHeight());
-    }
-
-    private void updateOffsets() {
-        // Update offsets for scrolling
-        galaxyOffset -= galaxyScrollSpeed; // Move galaxy layer up
-        nebulaOffset -= nebulaScrollSpeed; // Move nebula layer up
-
-        // Reset offset if it goes out of bounds
-        if (galaxyOffset <= -galaxyTexture.getHeight()) {
-            galaxyOffset = 0;
-        }
-        if (nebulaOffset <= -nebulaTexture.getHeight()) {
-            nebulaOffset = 0;
-        }
+        GameScreen.spriteBatch.draw(nebulaTexture, nebulaX1, nebulaY1);
+        GameScreen.spriteBatch.draw(nebulaTexture, nebulaX2, nebulaY1);
     }
 
     public void dispose() {

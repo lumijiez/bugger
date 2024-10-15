@@ -2,6 +2,7 @@ package org.lumijiez.bugger.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.math.Vector2;
 import org.lumijiez.bugger.entities.weapons.Arrow;
@@ -53,8 +54,11 @@ public class Player extends Entity {
     private void updateSpriteRotation() {
         float mouseX = Gdx.input.getX();
         float mouseY = Gdx.input.getY();
-        Vector2 mousePosition = new Vector2(mouseX, Gdx.graphics.getHeight() - mouseY);
-        Vector2 direction = mousePosition.cpy().sub(new Vector2(cam.position.x, cam.position.y)).nor();
+
+        Vector3 mousePosition = cam.unproject(new Vector3(mouseX, mouseY, 0));
+
+        Vector2 direction = new Vector2(mousePosition.x, mousePosition.y).sub(body.getPosition()).nor();
+
         float angle = direction.angleDeg() + 270f;
         body.setTransform(body.getPosition(), angle * (float) Math.PI / 180f);
         sprite.setRotation(body.getAngle() * (180f / (float) Math.PI));
@@ -62,13 +66,17 @@ public class Player extends Entity {
 
     public Arrow shootArrow() {
         Vector2 direction = new Vector2();
+
         float mouseX = Gdx.input.getX();
         float mouseY = Gdx.input.getY();
-        Vector2 mousePosition = new Vector2(mouseX, Gdx.graphics.getHeight() - mouseY);
-        direction.set(mousePosition).sub(new Vector2(cam.position.x, cam.position.y)).nor();
+
+        Vector3 mousePosition = cam.unproject(new Vector3(mouseX, mouseY, 0));
+
+        direction.set(mousePosition.x, mousePosition.y).sub(getPosition()).nor();
 
         Arrow arrow = new Arrow(world, getPosition(), direction);
         arrow.body.setUserData(arrow);
         return arrow;
     }
+
 }
