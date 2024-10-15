@@ -12,6 +12,7 @@ public abstract class Entity {
     protected Sprite sprite;
     protected final float size;
     protected World world;
+    protected boolean markedToDestroy = false;
 
     public Entity(World world, String texturePath, float size) {
         this.world = world;
@@ -48,5 +49,19 @@ public abstract class Entity {
 
     public Vector2 getPosition() {
         return body.getPosition();
+    }
+
+    public void destroy() {
+        if (!markedToDestroy) {
+            markedToDestroy = true;
+        }
+    }
+
+    public boolean isMarkedToDestroy() {
+        return markedToDestroy;
+    }
+
+    public Body getBody() {
+        return body;
     }
 }

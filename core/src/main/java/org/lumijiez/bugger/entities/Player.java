@@ -2,21 +2,16 @@ package org.lumijiez.bugger.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.math.Vector2;
+import org.lumijiez.bugger.entities.weapons.Arrow;
 
 public class Player extends Entity {
     private static Player instance;
     private final float speed = 5f;
 
     private Player() {
-        super(null, "images/wasp.png", 50f); // World will be set later
+        super(null, "images/wasp.png", 50f);
     }
 
     public static Player getInstance() {
@@ -61,5 +56,17 @@ public class Player extends Entity {
         float angle = direction.angleDeg() + 270f;
         body.setTransform(body.getPosition(), angle * (float) Math.PI / 180f);
         sprite.setRotation(body.getAngle() * (180f / (float) Math.PI));
+    }
+
+    public Arrow shootArrow() {
+        Vector2 direction = new Vector2();
+        float mouseX = Gdx.input.getX();
+        float mouseY = Gdx.input.getY();
+        Vector2 mousePosition = new Vector2(mouseX, Gdx.graphics.getHeight() - mouseY);
+        direction.set(mousePosition).sub(getPosition()).nor();
+
+        Arrow arrow = new Arrow(world, getPosition(), direction);
+        arrow.body.setUserData(arrow);
+        return arrow;
     }
 }
