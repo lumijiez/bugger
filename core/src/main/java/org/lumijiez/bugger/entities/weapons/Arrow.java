@@ -5,7 +5,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import org.lumijiez.bugger.entities.Entity;
 
 public class Arrow extends Entity {
-    private final float speed = 5000f;
+    private final float speed = 4000f;
     private final float lifetime = 3f;
     private float timeAlive = 0f;
 

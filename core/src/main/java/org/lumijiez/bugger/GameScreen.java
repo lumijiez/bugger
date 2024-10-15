@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -18,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameScreen implements Screen {
+    public static OrthographicCamera cam;
+    private SpaceBackground spaceBackground = new SpaceBackground();
     private final World world;
     private final Player player;
     public static final SpriteBatch spriteBatch = new SpriteBatch();
@@ -36,6 +39,11 @@ public class GameScreen implements Screen {
         arrows = new Array<>();
         entitiesToDestroy = new Array<>();
         world.setContactListener(new GameContactListener());
+
+        cam = new OrthographicCamera();
+        cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        cam.position.set(Player.getInstance().getPosition().x / 2f, Player.getInstance().getPosition().y / 2f, 0);
+        cam.update();
     }
 
     @Override
@@ -45,8 +53,13 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        cam.update();
+        spriteBatch.setProjectionMatrix(cam.combined);
+
         Gdx.gl.glClearColor(0.1f, 0.1f, 0.1f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        spaceBackground.render();
 
         world.step(1f, 6, 2);
 
@@ -100,6 +113,8 @@ public class GameScreen implements Screen {
         }
 
         debugRenderer.render(world, spriteBatch.getProjectionMatrix());
+
+        cam.position.set(Player.getInstance().getPosition().x, Player.getInstance().getPosition().y, 0);
     }
 
 
@@ -127,5 +142,6 @@ public class GameScreen implements Screen {
     public void dispose() {
         spriteBatch.dispose();
         world.dispose();
+        spaceBackground.dispose();
     }
 }

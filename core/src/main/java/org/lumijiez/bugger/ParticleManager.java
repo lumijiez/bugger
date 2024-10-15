@@ -1,5 +1,6 @@
 package org.lumijiez.bugger;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
@@ -45,11 +46,11 @@ public class ParticleManager {
     }
 
     public void render(SpriteBatch spriteBatch) {
-        spriteBatch.begin();
         for (ParticleEffectPool.PooledEffect effect : activeEffects) {
+            GameScreen.spriteBatch.begin();
             effect.draw(spriteBatch);
+            GameScreen.spriteBatch.end();
         }
-        spriteBatch.end();
     }
 
     public void dispose() {

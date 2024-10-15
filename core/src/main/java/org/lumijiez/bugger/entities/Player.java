@@ -6,6 +6,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.math.Vector2;
 import org.lumijiez.bugger.entities.weapons.Arrow;
 
+import static org.lumijiez.bugger.GameScreen.cam;
+
 public class Player extends Entity {
     private static Player instance;
     private final float speed = 5f;
@@ -52,7 +54,7 @@ public class Player extends Entity {
         float mouseX = Gdx.input.getX();
         float mouseY = Gdx.input.getY();
         Vector2 mousePosition = new Vector2(mouseX, Gdx.graphics.getHeight() - mouseY);
-        Vector2 direction = mousePosition.cpy().sub(body.getPosition()).nor();
+        Vector2 direction = mousePosition.cpy().sub(new Vector2(cam.position.x, cam.position.y)).nor();
         float angle = direction.angleDeg() + 270f;
         body.setTransform(body.getPosition(), angle * (float) Math.PI / 180f);
         sprite.setRotation(body.getAngle() * (180f / (float) Math.PI));
@@ -63,7 +65,7 @@ public class Player extends Entity {
         float mouseX = Gdx.input.getX();
         float mouseY = Gdx.input.getY();
         Vector2 mousePosition = new Vector2(mouseX, Gdx.graphics.getHeight() - mouseY);
-        direction.set(mousePosition).sub(getPosition()).nor();
+        direction.set(mousePosition).sub(new Vector2(cam.position.x, cam.position.y)).nor();
 
         Arrow arrow = new Arrow(world, getPosition(), direction);
         arrow.body.setUserData(arrow);
