@@ -8,12 +8,13 @@ public class Arrow extends Entity {
     private float timeAlive = 0f;
 
     public Arrow(World world, Vector2 position, Vector2 direction) {
-        super(world, "images/wasp.png", 10f);
-        Vector2 offsetPosition = position.cpy().add(direction.nor().scl(size + 15f));
+        super(world, "images/wasp.png", 1f);
+        Vector2 offsetPosition = position.cpy().add(direction.nor().scl(size + 1f));
 
         this.body = createBody(offsetPosition.x, offsetPosition.y);
-        float speed = 4000f;
+        float speed = 5000f;
         this.body.setLinearVelocity(direction.nor().scl(speed));
+        this.body.setAngularVelocity(speed);
     }
 
     protected Body createBody(float x, float y) {

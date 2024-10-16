@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -46,8 +47,7 @@ public class Bugger {
         this.world.setContactListener(new GameContactListener());
         this.debugRenderer = new Box2DDebugRenderer();
         spriteBatch = new SpriteBatch();
-        cam = new OrthographicCamera();
-        cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        cam = new OrthographicCamera(160, 90);
         cam.position.set(Player.getInstance().getPosition().x / 2f, Player.getInstance().getPosition().y / 2f, 0);
         cam.update();
     }
@@ -60,14 +60,19 @@ public class Bugger {
     }
 
     public void cycle(float delta) {
-        updateCamera(delta);
+        cam.update();
 
         renderClear();
         renderBackground();
 
+        renderPlayer();
+
         step();
+        spriteBatch.setProjectionMatrix(cam.combined);
+        cam.position.set(player.getPosition().x, player.getPosition().y, 0);
 
         handleInput();
+
 
         cycleProjectiles(delta);
         cycleEnemies();
@@ -75,7 +80,7 @@ public class Bugger {
 
         clearEntities();
 
-        renderPlayer();
+
         renderEnemies(delta);
         renderDebug();
     }
@@ -108,12 +113,6 @@ public class Bugger {
 
     public void renderDebug() {
         debugRenderer.render(world, spriteBatch.getProjectionMatrix());
-    }
-
-    public void updateCamera(float delta) {
-        cam.update();
-        spriteBatch.setProjectionMatrix(cam.combined);
-        cam.position.set(Player.getInstance().getPosition().x, Player.getInstance().getPosition().y, 0);
     }
 
     public void cycleProjectiles(float delta) {
@@ -153,7 +152,7 @@ public class Bugger {
     }
 
     public void step() {
-        world.step(1f, 6, 2);
+        world.step(1 / 20f, 6, 2);
     }
 
     public void playParticle(float x, float y) {
@@ -179,6 +178,7 @@ public class Bugger {
         spriteBatch.dispose();
         world.dispose();
         spaceBackground.dispose();
+        ParticleManager.getInstance().dispose();
     }
 
 }

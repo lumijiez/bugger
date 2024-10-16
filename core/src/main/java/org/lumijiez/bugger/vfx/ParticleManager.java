@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import org.lumijiez.bugger.Bugger;
-import org.lumijiez.bugger.GameScreen;
 
 public class ParticleManager {
     private static ParticleManager instance;
@@ -16,7 +15,7 @@ public class ParticleManager {
     private ParticleManager() {
         ParticleEffect effect = new ParticleEffect();
         effect.load(Gdx.files.internal("particles/boom.p"), Gdx.files.internal("particles"));
-        effect.scaleEffect(0.2f);
+        effect.scaleEffect(0.6f);
         particleEffectPool = new ParticleEffectPool(effect, 1, 20);
         activeEffects = new Array<>();
     }

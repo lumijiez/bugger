@@ -9,7 +9,7 @@ public class Wasp extends EnemyEntity {
     private static final Random random = new Random();
 
     public Wasp(World world, Vector2 playerPosition) {
-        super(world, "images/wasp.png", 20f);
+        super(world, "images/wasp.png", 5f);
         float spawnRadius = 100;
         float angle = random.nextFloat() * 2 * (float) Math.PI;
         float spawnX = playerPosition.x + (float) Math.cos(angle) * (spawnRadius + size);

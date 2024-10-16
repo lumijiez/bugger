@@ -12,7 +12,7 @@ public class Player extends Entity {
     private static Player instance;
 
     private Player() {
-        super(null, "images/wasp.png", 50f);
+        super(null, "images/wasp.png", 10f);
     }
 
     public static Player getInstance() {
@@ -28,7 +28,7 @@ public class Player extends Entity {
     }
 
     public void move(float deltaX, float deltaY) {
-        float speed = 5f;
+        float speed = 500f;
         body.setLinearVelocity(deltaX * speed, deltaY * speed);
     }
 
