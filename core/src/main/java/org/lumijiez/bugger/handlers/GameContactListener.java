@@ -1,7 +1,6 @@
-package org.lumijiez.bugger;
+package org.lumijiez.bugger.handlers;
 
 import com.badlogic.gdx.physics.box2d.*;
-import org.lumijiez.bugger.entities.Entity;
 import org.lumijiez.bugger.entities.enemies.EnemyEntity;
 import org.lumijiez.bugger.entities.weapons.Arrow;
 

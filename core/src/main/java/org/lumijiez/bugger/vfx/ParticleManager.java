@@ -1,11 +1,12 @@
-package org.lumijiez.bugger;
+package org.lumijiez.bugger.vfx;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
+import org.lumijiez.bugger.Bugger;
+import org.lumijiez.bugger.GameScreen;
 
 public class ParticleManager {
     private static ParticleManager instance;
@@ -47,9 +48,9 @@ public class ParticleManager {
 
     public void render(SpriteBatch spriteBatch) {
         for (ParticleEffectPool.PooledEffect effect : activeEffects) {
-            GameScreen.spriteBatch.begin();
+            Bugger.spriteBatch.begin();
             effect.draw(spriteBatch);
-            GameScreen.spriteBatch.end();
+            Bugger.spriteBatch.end();
         }
     }
 

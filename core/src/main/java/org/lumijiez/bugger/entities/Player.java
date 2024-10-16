@@ -5,13 +5,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.math.Vector2;
+import org.lumijiez.bugger.Bugger;
 import org.lumijiez.bugger.entities.weapons.Arrow;
-
-import static org.lumijiez.bugger.GameScreen.cam;
 
 public class Player extends Entity {
     private static Player instance;
-    private final float speed = 5f;
 
     private Player() {
         super(null, "images/wasp.png", 50f);
@@ -30,6 +28,7 @@ public class Player extends Entity {
     }
 
     public void move(float deltaX, float deltaY) {
+        float speed = 5f;
         body.setLinearVelocity(deltaX * speed, deltaY * speed);
     }
 
@@ -55,7 +54,7 @@ public class Player extends Entity {
         float mouseX = Gdx.input.getX();
         float mouseY = Gdx.input.getY();
 
-        Vector3 mousePosition = cam.unproject(new Vector3(mouseX, mouseY, 0));
+        Vector3 mousePosition = Bugger.cam.unproject(new Vector3(mouseX, mouseY, 0));
 
         Vector2 direction = new Vector2(mousePosition.x, mousePosition.y).sub(body.getPosition()).nor();
 
@@ -70,7 +69,7 @@ public class Player extends Entity {
         float mouseX = Gdx.input.getX();
         float mouseY = Gdx.input.getY();
 
-        Vector3 mousePosition = cam.unproject(new Vector3(mouseX, mouseY, 0));
+        Vector3 mousePosition = Bugger.cam.unproject(new Vector3(mouseX, mouseY, 0));
 
         direction.set(mousePosition.x, mousePosition.y).sub(getPosition()).nor();
 

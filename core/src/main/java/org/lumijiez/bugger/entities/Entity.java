@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import org.lumijiez.bugger.GameScreen;
+import org.lumijiez.bugger.Bugger;
 
 public abstract class Entity {
     protected Body body;
@@ -42,9 +42,9 @@ public abstract class Entity {
         sprite.setSize(size, size);
         sprite.setPosition(body.getPosition().x - size / 2, body.getPosition().y - size / 2);
         sprite.setRotation(body.getAngle() * (180f / (float) Math.PI));
-        GameScreen.spriteBatch.begin();
-        sprite.draw(GameScreen.spriteBatch);
-        GameScreen.spriteBatch.end();
+        Bugger.spriteBatch.begin();
+        sprite.draw(Bugger.spriteBatch);
+        Bugger.spriteBatch.end();
     }
 
     public Vector2 getPosition() {

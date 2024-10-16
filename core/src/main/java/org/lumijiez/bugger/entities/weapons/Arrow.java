@@ -5,8 +5,6 @@ import com.badlogic.gdx.physics.box2d.*;
 import org.lumijiez.bugger.entities.Entity;
 
 public class Arrow extends Entity {
-    private final float speed = 4000f;
-    private final float lifetime = 3f;
     private float timeAlive = 0f;
 
     public Arrow(World world, Vector2 position, Vector2 direction) {
@@ -14,6 +12,7 @@ public class Arrow extends Entity {
         Vector2 offsetPosition = position.cpy().add(direction.nor().scl(size + 15f));
 
         this.body = createBody(offsetPosition.x, offsetPosition.y);
+        float speed = 4000f;
         this.body.setLinearVelocity(direction.nor().scl(speed));
     }
 
@@ -38,6 +37,7 @@ public class Arrow extends Entity {
 
     public void update(float delta) {
         timeAlive += delta;
+        float lifetime = 3f;
         if (timeAlive >= lifetime || isMarkedToDestroy()) {
             destroy();
         }
