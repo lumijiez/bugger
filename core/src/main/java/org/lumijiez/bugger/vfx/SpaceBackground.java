@@ -13,6 +13,9 @@ public class SpaceBackground {
     private final float[] starPositionsY;
     private final int numStars = 10000;
 
+    // Scale factor for all textures
+    private final float scaleFactor = 0.1f; // Scaling down by 0.1
+
     public SpaceBackground() {
         starTexture = new Texture(Gdx.files.internal("images/star.png"));
         galaxyTexture = new Texture(Gdx.files.internal("images/galaxy.png"));
@@ -41,7 +44,6 @@ public class SpaceBackground {
     }
 
     private void drawStars(float cameraX, float cameraY) {
-
         for (int i = 0; i < numStars; i++) {
             float starScrollSpeedX = 0.5f;
             float starX = starPositionsX[i] - cameraX * starScrollSpeedX;
@@ -51,10 +53,9 @@ public class SpaceBackground {
             float offsetX = MathUtils.random(-2f, 2f);
             float offsetY = MathUtils.random(-2f, 2f);
 
-            float starScale = 0.1f;
-
-            float scaledWidth = starTexture.getWidth() * starScale;
-            float scaledHeight = starTexture.getHeight() * starScale;
+            // Scale the star size
+            float scaledWidth = starTexture.getWidth() * scaleFactor;
+            float scaledHeight = starTexture.getHeight() * scaleFactor;
 
             Bugger.spriteBatch.draw(starTexture,
                 starX + offsetX,
@@ -72,27 +73,31 @@ public class SpaceBackground {
     private void drawGalaxies(float cameraX, float cameraY) {
         float galaxyScrollSpeedY = 0.2f;
         float galaxyY1 = (cameraY * galaxyScrollSpeedY) % galaxyTexture.getHeight() - galaxyTexture.getHeight();
-        // float galaxyY2 = galaxyY1 + galaxyTexture.getHeight();
-
         float galaxyScrollSpeedX = 0.2f;
         float galaxyX1 = -cameraX * galaxyScrollSpeedX;
         float galaxyX2 = galaxyX1 + galaxyTexture.getWidth();
 
-        Bugger.spriteBatch.draw(galaxyTexture, galaxyX1, galaxyY1);
-        Bugger.spriteBatch.draw(galaxyTexture, galaxyX2, galaxyY1);
+        // Scale the galaxy size
+        float scaledGalaxyWidth = galaxyTexture.getWidth() * scaleFactor;
+        float scaledGalaxyHeight = galaxyTexture.getHeight() * scaleFactor;
+
+        Bugger.spriteBatch.draw(galaxyTexture, galaxyX1, galaxyY1, scaledGalaxyWidth, scaledGalaxyHeight);
+        Bugger.spriteBatch.draw(galaxyTexture, galaxyX2, galaxyY1, scaledGalaxyWidth, scaledGalaxyHeight);
     }
 
     private void drawNebulae(float cameraX, float cameraY) {
         float nebulaScrollSpeedY = 0.025f;
         float nebulaY1 = (cameraY * nebulaScrollSpeedY) % nebulaTexture.getHeight() - nebulaTexture.getHeight();
-        // float nebulaY2 = nebulaY1 + nebulaTexture.getHeight();
-
         float nebulaScrollSpeedX = 0.025f;
         float nebulaX1 = -cameraX * nebulaScrollSpeedX;
         float nebulaX2 = nebulaX1 + nebulaTexture.getWidth();
 
-        Bugger.spriteBatch.draw(nebulaTexture, nebulaX1, nebulaY1);
-        Bugger.spriteBatch.draw(nebulaTexture, nebulaX2, nebulaY1);
+        // Scale the nebula size
+        float scaledNebulaWidth = nebulaTexture.getWidth() * scaleFactor;
+        float scaledNebulaHeight = nebulaTexture.getHeight() * scaleFactor;
+
+        Bugger.spriteBatch.draw(nebulaTexture, nebulaX1, nebulaY1, scaledNebulaWidth, scaledNebulaHeight);
+        Bugger.spriteBatch.draw(nebulaTexture, nebulaX2, nebulaY1, scaledNebulaWidth, scaledNebulaHeight);
     }
 
     public void dispose() {

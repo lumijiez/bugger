@@ -15,7 +15,7 @@ public class ParticleManager {
     private ParticleManager() {
         ParticleEffect effect = new ParticleEffect();
         effect.load(Gdx.files.internal("particles/boom.p"), Gdx.files.internal("particles"));
-        effect.scaleEffect(0.6f);
+        effect.scaleEffect(0.5f);
         particleEffectPool = new ParticleEffectPool(effect, 1, 20);
         activeEffects = new Array<>();
     }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -13,8 +14,10 @@ import com.badlogic.gdx.utils.Array;
 import org.lumijiez.bugger.entities.Entity;
 import org.lumijiez.bugger.entities.Player;
 import org.lumijiez.bugger.entities.enemies.EnemyEntity;
+import org.lumijiez.bugger.entities.enemies.Stalker;
 import org.lumijiez.bugger.entities.enemies.Wasp;
 import org.lumijiez.bugger.entities.weapons.Arrow;
+import org.lumijiez.bugger.entities.weapons.Projectile;
 import org.lumijiez.bugger.handlers.GameContactListener;
 import org.lumijiez.bugger.vfx.ParticleManager;
 import org.lumijiez.bugger.vfx.SpaceBackground;
@@ -26,7 +29,7 @@ public class Bugger {
     private static Bugger instance;
     private final World world;
     private final SpaceBackground spaceBackground;
-    private final Array<Arrow> projectiles;
+    private final Array<Projectile> projectiles;
     private final List<EnemyEntity> enemies;
     private final Array<Entity> entitiesToDestroy;
     private final Player player;
@@ -34,9 +37,13 @@ public class Bugger {
     private static final float ENEMY_SPAWN_INTERVAL = 0.5f;
     private final Box2DDebugRenderer debugRenderer;
     public static OrthographicCamera cam;
+    public static OrthographicCamera uiCam;
     public static SpriteBatch spriteBatch;
+    public static SpriteBatch uiBatch;
+    private final BitmapFont bitmapFont;
 
     private Bugger() {
+        bitmapFont = new BitmapFont(Gdx.files.internal("EA.fnt"), Gdx.files.internal("EA.png"), false);
         world = new World(new Vector2(0, 0), true);
         this.projectiles = new Array<>();
         this.entitiesToDestroy = new Array<>();
@@ -47,9 +54,14 @@ public class Bugger {
         this.world.setContactListener(new GameContactListener());
         this.debugRenderer = new Box2DDebugRenderer();
         spriteBatch = new SpriteBatch();
+        uiBatch = new SpriteBatch();
         cam = new OrthographicCamera(160, 90);
         cam.position.set(Player.getInstance().getPosition().x / 2f, Player.getInstance().getPosition().y / 2f, 0);
         cam.update();
+
+        uiCam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        uiCam.position.set(uiCam.viewportWidth / 2, uiCam.viewportHeight / 2, 0); // Center the camera
+        uiCam.update();
     }
 
     public static Bugger getInstance() {
@@ -60,19 +72,10 @@ public class Bugger {
     }
 
     public void cycle(float delta) {
-        cam.update();
-
         renderClear();
         renderBackground();
 
-        renderPlayer();
-
         step();
-        spriteBatch.setProjectionMatrix(cam.combined);
-        cam.position.set(player.getPosition().x, player.getPosition().y, 0);
-
-        handleInput();
-
 
         cycleProjectiles(delta);
         cycleEnemies();
@@ -80,9 +83,22 @@ public class Bugger {
 
         clearEntities();
 
+        cam.position.set(player.getBody().getPosition().x, player.getBody().getPosition().y, 0);
+        cam.update();
 
+        renderPlayer();
         renderEnemies(delta);
         renderDebug();
+
+        spriteBatch.setProjectionMatrix(cam.combined);
+
+        uiBatch.begin();
+        bitmapFont.draw(uiBatch, "Speed: " + Player.getInstance().getBody().getLinearVelocity().len(), 100, 150);
+        uiBatch.end();
+
+        uiBatch.setProjectionMatrix(uiCam.combined);
+        uiCam.update();
+        handleInput();
     }
 
     public void renderBackground() {
@@ -92,6 +108,7 @@ public class Bugger {
     public void renderEnemies(float delta) {
         enemySpawnTimer += delta;
         if (enemySpawnTimer >= ENEMY_SPAWN_INTERVAL) {
+            enemies.add(new Stalker(world, Player.getInstance().getPosition()));
             enemies.add(new Wasp(world, Player.getInstance().getPosition()));
             enemySpawnTimer = 0;
         }
@@ -116,7 +133,7 @@ public class Bugger {
     }
 
     public void cycleProjectiles(float delta) {
-        for (Arrow arrow : projectiles) {
+        for (Projectile arrow : projectiles) {
             if (!arrow.isMarkedToDestroy()) {
                 arrow.update(delta);
                 arrow.render();
@@ -152,7 +169,7 @@ public class Bugger {
     }
 
     public void step() {
-        world.step(1 / 20f, 6, 2);
+        world.step(1 / 60f, 6, 2);
     }
 
     public void playParticle(float x, float y) {
