@@ -3,7 +3,6 @@ package org.lumijiez.bugger.handlers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import org.lumijiez.bugger.Bugger;
 import org.lumijiez.bugger.entities.Player;
@@ -27,7 +26,7 @@ public class UIRenderer {
         SpriteBatch uiBatch = Bugger.uiBatch;
         OrthographicCamera uiCam = Bugger.uiCam;
         int kills = Bugger.kills;
-        int enemies = Bugger.getInstance().getEnemies().size();
+        int enemies = EnemyHandler.getInstance().getEnemies().size();
         int projectiles = Bugger.getInstance().getProjectiles().size;
         int bodies = Bugger.getInstance().getWorld().getBodyCount();
         uiBatch.begin();

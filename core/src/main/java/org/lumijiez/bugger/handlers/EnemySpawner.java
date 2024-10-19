@@ -33,15 +33,15 @@ public class EnemySpawner {
     public void spawn(Enemies enemy) {
         World world = Bugger.getInstance().getWorld();
         Vector2 playerPos = Bugger.getInstance().getPlayer().getPosition();
-        Bugger.getInstance().getEnemies().add(EnemyFactory.createEnemy(enemy, world, playerPos));
+        EnemyHandler.getInstance().getEnemies().add(EnemyFactory.createEnemy(enemy, world, playerPos));
     }
 
     public void spawn(Enemies enemy, World world, Vector2 position) {
-        Bugger.getInstance().getEnemies().add(EnemyFactory.createEnemy(enemy, world, position));
+        EnemyHandler.getInstance().getEnemies().add(EnemyFactory.createEnemy(enemy, world, position));
     }
 
     private void trySpawnRandom(World world, Vector2 position) {
-        Bugger.getInstance().getEnemies().add(EnemyFactory.createRandomEnemy(world, position));
+        EnemyHandler.getInstance().getEnemies().add(EnemyFactory.createRandomEnemy(world, position));
     }
 }
 

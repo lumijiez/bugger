@@ -11,6 +11,8 @@ import org.lumijiez.bugger.vfx.ParticleManager;
 import java.util.List;
 
 public class EntityCleaner {
+    private final Array<Entity> entitiesToDestroy = new Array<>();
+
     private static EntityCleaner instance;
 
     private EntityCleaner() {}
@@ -23,9 +25,9 @@ public class EntityCleaner {
     }
 
     public void tryClean() {
-        Array<Entity> entities = Bugger.getInstance().getEntitiesToDestroy();
+        Array<Entity> entities = entitiesToDestroy;
         Array<Projectile> projectiles = Bugger.getInstance().getProjectiles();
-        List<EnemyEntity> enemies = Bugger.getInstance().getEnemies();
+        List<EnemyEntity> enemies = EnemyHandler.getInstance().getEnemies();
         World world = Bugger.getInstance().getWorld();
 
         for (Entity entity : entities) {
@@ -42,6 +44,10 @@ public class EntityCleaner {
 
         }
         entities.clear();
+    }
+
+    public Array<Entity> getEntitiesToDestroy() {
+        return entitiesToDestroy;
     }
 
     public void disposeAll() {

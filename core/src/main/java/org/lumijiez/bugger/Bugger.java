@@ -19,16 +19,10 @@ import org.lumijiez.bugger.handlers.*;
 import org.lumijiez.bugger.vfx.ParticleManager;
 import org.lumijiez.bugger.vfx.SpaceBackground;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Bugger {
     private static Bugger instance;
     private final World world = new World(new Vector2(0, 0), true);;
     private final SpaceBackground spaceBackground = new SpaceBackground();
-    private final Array<Projectile> projectiles = new Array<>();
-    private final List<EnemyEntity> enemies = new ArrayList<>();
-    private final Array<Entity> entitiesToDestroy = new Array<>();
     private final Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
     public static SpriteBatch spriteBatch = new SpriteBatch();
     public static SpriteBatch uiBatch = new SpriteBatch();
@@ -65,7 +59,7 @@ public class Bugger {
         step();
 
         cycleProjectiles(delta);
-        cycleEnemies();
+        EnemyHandler.getInstance().cycle();
         cycleParticles(delta);
 
         EntityCleaner.getInstance().tryClean();
@@ -73,7 +67,7 @@ public class Bugger {
         updateCamera();
 
         renderPlayer();
-        renderEnemies(delta);
+        EnemyHandler.getInstance().render(delta);
 //        renderDebug();
 
         UIRenderer.getInstance().renderUI();
@@ -88,11 +82,6 @@ public class Bugger {
 
     public void renderBackground() {
         spaceBackground.render();
-    }
-
-    public void renderEnemies(float delta) {
-        EnemySpawner.getInstance().cycle(delta);
-        for (EnemyEntity enemy : enemies) enemy.cycle();
     }
 
     public void renderPlayer() {
@@ -119,14 +108,6 @@ public class Bugger {
         }
     }
 
-    public void cycleEnemies() {
-        for (EnemyEntity enemy : enemies) {
-            if (enemy.isMarkedToDestroy()) {
-                entitiesToDestroy.add(enemy);
-            }
-        }
-    }
-
     public void cycleParticles(float delta) {
         ParticleManager.getInstance().update(delta);
         ParticleManager.getInstance().render(spriteBatch);
@@ -140,20 +121,12 @@ public class Bugger {
         EntityCleaner.getInstance().disposeAll();
     }
 
-    public List<EnemyEntity> getEnemies() {
-        return enemies;
-    }
-
     public World getWorld() {
         return world;
     }
 
     public Player getPlayer() {
         return player;
-    }
-
-    public Array<Entity> getEntitiesToDestroy() {
-        return entitiesToDestroy;
     }
 
     public Array<Projectile> getProjectiles() {
