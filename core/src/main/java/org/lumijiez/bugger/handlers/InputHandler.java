@@ -18,7 +18,7 @@ public class InputHandler {
     }
 
     public void handleInput() {
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
             ProjectileHandler.getInstance().shootRay();
         }
 

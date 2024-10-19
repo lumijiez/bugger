@@ -27,7 +27,7 @@ public class InterfaceHandler {
         OrthographicCamera uiCam = CameraHandler.getInstance().getUICamera();
         int kills = Bugger.kills;
         int enemies = EnemyHandler.getInstance().getEnemies().size();
-        int projectiles = ProjectileHandler.getInstance().getProjectiles().size;
+        int projectiles = ProjectileHandler.getInstance().getDeployedProjectiles().size;
         int bodies = Bugger.getInstance().getWorld().getBodyCount();
         uiBatch.begin();
 

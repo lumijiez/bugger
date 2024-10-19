@@ -25,16 +25,16 @@ public class CleanupHandler {
 
     public void tryClean() {
         Array<Entity> entities = entitiesToDestroy;
-        Array<Projectile> projectiles = ProjectileHandler.getInstance().getProjectiles();
+        //Array<Projectile> projectiles = ProjectileHandler.getInstance().getDeployedProjectiles();
         List<EnemyEntity> enemies = EnemyHandler.getInstance().getEnemies();
         World world = Bugger.getInstance().getWorld();
 
         for (Entity entity : entities) {
             world.destroyBody(entity.getBody());
 
-            if (entity instanceof Projectile) {
-                projectiles.removeValue((Projectile) entity, true);
-            }
+//            if (entity instanceof Projectile) {
+//                projectiles.removeValue((Projectile) entity, true);
+//            }
 
             if (entity instanceof EnemyEntity) {
                 ParticleHandler.getInstance().playEffect(entity.getBody().getPosition().x, entity.getBody().getPosition().y);

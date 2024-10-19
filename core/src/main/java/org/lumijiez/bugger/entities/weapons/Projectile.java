@@ -6,7 +6,7 @@ import org.lumijiez.bugger.entities.Entity;
 
 public abstract class Projectile extends Entity {
 
-    private float timeAlive = 0f;
+    protected float timeAlive = 0f;
 
     public Projectile(World world, String texturePath, float size) {
         super(world, texturePath, size);
@@ -60,5 +60,10 @@ public abstract class Projectile extends Entity {
 
     public void render() {
         super.render();
+    }
+
+    @Override
+    public void destroy() {
+        markedToDestroy = true;
     }
 }

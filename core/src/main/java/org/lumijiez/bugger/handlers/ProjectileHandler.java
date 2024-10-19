@@ -6,14 +6,20 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import org.lumijiez.bugger.Bugger;
 import org.lumijiez.bugger.entities.Player;
-import org.lumijiez.bugger.entities.weapons.Projectile;
 import org.lumijiez.bugger.entities.weapons.Ray;
 
 public class ProjectileHandler {
-    private final Array<Projectile> projectiles = new Array<>();
+    private final Array<Ray> deployedProjectiles = new Array<>();
+    private final Array<Ray> freeProjectiles = new Array<>();
     private static ProjectileHandler instance;
 
-    private ProjectileHandler() {}
+    private static final int INITIAL_PROJECTILES = 50;
+
+    private ProjectileHandler() {
+        for (int i = 0; i < INITIAL_PROJECTILES; i++) {
+            freeProjectiles.add(new Ray(Bugger.getInstance().getWorld()));
+        }
+    }
 
     public static ProjectileHandler getInstance() {
         if (instance == null) {
@@ -23,12 +29,16 @@ public class ProjectileHandler {
     }
 
     public void cycle(float delta) {
-        for (Projectile arrow : projectiles) {
-            if (!arrow.isMarkedToDestroy()) {
-                arrow.update(delta);
-                arrow.render();
+        for (int i = 0; i < deployedProjectiles.size; i++) {
+            Ray ray = deployedProjectiles.get(i);
+            if (!ray.isMarkedToDestroy()) {
+                ray.update(delta);
+                ray.render();
             } else {
-                CleanupHandler.getInstance().getEntitiesToDestroy().add(arrow);
+                ray.reset();
+                freeProjectiles.add(ray);
+                deployedProjectiles.removeIndex(i);
+                i--;
             }
         }
     }
@@ -44,15 +54,26 @@ public class ProjectileHandler {
         Vector2 playerPos = Player.getInstance().getPosition();
         direction.set(mousePosition.x, mousePosition.y).sub(playerPos).nor();
 
-        projectiles.add(new Ray(Bugger.getInstance().getWorld(), playerPos, direction));
+        shootRay(playerPos, direction, 20f);
     }
 
     public void shootRay(Vector2 position, Vector2 direction, float speed) {
-        projectiles.add(new Ray(Bugger.getInstance().getWorld(), position, direction, speed));
+        Ray projectile;
+
+        if (freeProjectiles.size > 0) {
+            projectile = freeProjectiles.pop();
+        } else if (deployedProjectiles.size > 0) {
+            projectile = deployedProjectiles.first();
+            deployedProjectiles.removeIndex(0);
+        } else {
+            return;
+        }
+
+        projectile.init(position, direction.nor().scl(speed));
+        deployedProjectiles.add(projectile);
     }
 
-
-    public Array<Projectile> getProjectiles() {
-        return projectiles;
+    public Array<Ray> getDeployedProjectiles() {
+        return deployedProjectiles;
     }
 }
