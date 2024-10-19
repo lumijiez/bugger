@@ -11,8 +11,8 @@ public class EnemyEntity extends Entity {
 
     public void moveTowards(Vector2 target) {
         Vector2 direction = target.cpy().sub(body.getPosition()).nor();
-        float speed = 50f;
-        body.setLinearVelocity(direction.scl(speed / 100f));
+        float speed = 10f;
+        body.setLinearVelocity(direction.scl(speed));
 
         float angle = direction.angleDeg() + 270f;
         body.setTransform(body.getPosition(), angle * (float) Math.PI / 180f);

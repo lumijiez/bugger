@@ -53,6 +53,7 @@ public abstract class Entity {
 
     public void destroy() {
         if (!markedToDestroy) {
+            this.sprite.getTexture().dispose();
             markedToDestroy = true;
         }
     }

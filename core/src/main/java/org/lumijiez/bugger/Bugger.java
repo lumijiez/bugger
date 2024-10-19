@@ -7,17 +7,15 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import org.lumijiez.bugger.entities.Entity;
 import org.lumijiez.bugger.entities.Player;
-import org.lumijiez.bugger.entities.enemies.EnemyEntity;
-import org.lumijiez.bugger.entities.enemies.Stalker;
-import org.lumijiez.bugger.entities.enemies.Wasp;
-import org.lumijiez.bugger.entities.weapons.Arrow;
+import org.lumijiez.bugger.entities.enemies.*;
+import org.lumijiez.bugger.entities.weapons.Ray;
 import org.lumijiez.bugger.entities.weapons.Projectile;
+import org.lumijiez.bugger.factories.EnemyFactory;
 import org.lumijiez.bugger.handlers.GameContactListener;
 import org.lumijiez.bugger.vfx.ParticleManager;
 import org.lumijiez.bugger.vfx.SpaceBackground;
@@ -40,6 +38,7 @@ public class Bugger {
     public static OrthographicCamera uiCam;
     public static SpriteBatch spriteBatch;
     public static SpriteBatch uiBatch;
+    public static int kills = 0;
     private final BitmapFont bitmapFont;
 
     private Bugger() {
@@ -60,7 +59,7 @@ public class Bugger {
         cam.update();
 
         uiCam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        uiCam.position.set(uiCam.viewportWidth / 2, uiCam.viewportHeight / 2, 0); // Center the camera
+        uiCam.position.set(uiCam.viewportWidth / 2, uiCam.viewportHeight / 2, 0);
         uiCam.update();
     }
 
@@ -88,13 +87,33 @@ public class Bugger {
 
         renderPlayer();
         renderEnemies(delta);
-        renderDebug();
+        // renderDebug();
 
         spriteBatch.setProjectionMatrix(cam.combined);
 
         uiBatch.begin();
-        bitmapFont.draw(uiBatch, "Speed: " + Player.getInstance().getBody().getLinearVelocity().len(), 100, 150);
+
+        uiBatch.setColor(1, 1, 1, 1);
+        bitmapFont.draw(uiBatch, String.format("Speed: %.2f", Player.getInstance().getBody().getLinearVelocity().len()),
+            10, uiCam.viewportHeight - 10);
+        bitmapFont.draw(uiBatch, "Kills: " + kills, 10, uiCam.viewportHeight - 40);
+
+        bitmapFont.setColor(0, 1, 0, 1);
+
+
+        bitmapFont.draw(uiBatch, "Enemies: " + enemies.size(), 10, uiCam.viewportHeight - 70);
+        bitmapFont.draw(uiBatch, "Projectiles: " + projectiles.size, 10, uiCam.viewportHeight - 100);
+        bitmapFont.draw(uiBatch, "Entities to Destroy: " + entitiesToDestroy.size, 10, uiCam.viewportHeight - 130);
+        bitmapFont.draw(uiBatch, String.format("Player Pos: (%.2f, %.2f)",
+            Player.getInstance().getBody().getPosition().x,
+            Player.getInstance().getBody().getPosition().y), 10, uiCam.viewportHeight - 160);
+        bitmapFont.draw(uiBatch, "Bodies: " + world.getBodyCount(), 10, uiCam.viewportHeight - 190);
+        bitmapFont.draw(uiBatch, "Proxies: " + world.getProxyCount(), 10, uiCam.viewportHeight - 220);
+
+        bitmapFont.setColor(1, 1, 1, 1);
+
         uiBatch.end();
+
 
         uiBatch.setProjectionMatrix(uiCam.combined);
         uiCam.update();
@@ -106,10 +125,10 @@ public class Bugger {
     }
 
     public void renderEnemies(float delta) {
+
         enemySpawnTimer += delta;
         if (enemySpawnTimer >= ENEMY_SPAWN_INTERVAL) {
-            enemies.add(new Stalker(world, Player.getInstance().getPosition()));
-            enemies.add(new Wasp(world, Player.getInstance().getPosition()));
+            enemies.add(EnemyFactory.createRandomEnemy(world, Player.getInstance().getPosition()));
             enemySpawnTimer = 0;
         }
 
@@ -159,17 +178,20 @@ public class Bugger {
     public void clearEntities() {
         for (Entity entity : entitiesToDestroy) {
             world.destroyBody(entity.getBody());
-            if (entity instanceof Arrow) projectiles.removeValue((Arrow) entity, true);
+            if (entity instanceof Projectile) {
+                projectiles.removeValue((Projectile) entity, true);
+            }
             if (entity instanceof EnemyEntity) {
                 playParticle(entity.getBody().getPosition().x, entity.getBody().getPosition().y);
                 enemies.remove(entity);
             }
+
         }
         entitiesToDestroy.clear();
     }
 
     public void step() {
-        world.step(1 / 60f, 6, 2);
+        world.step(1 / 30f, 6, 2);
     }
 
     public void playParticle(float x, float y) {
@@ -177,12 +199,12 @@ public class Bugger {
     }
 
     public void shoot() {
-        Arrow arrow = player.shootArrow();
-        projectiles.add(arrow);
+        Ray ray = player.shootArrow();
+        projectiles.add(ray);
     }
 
     public void handleInput() {
-        if (Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)) {
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             shoot();
         }
     }
@@ -193,9 +215,9 @@ public class Bugger {
 
     public void dispose() {
         spriteBatch.dispose();
+        uiBatch.dispose();
         world.dispose();
         spaceBackground.dispose();
         ParticleManager.getInstance().dispose();
     }
-
 }

@@ -6,8 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.math.Vector2;
 import org.lumijiez.bugger.Bugger;
-import org.lumijiez.bugger.entities.weapons.Arrow;
-import org.lumijiez.bugger.vfx.ParticleManager;
+import org.lumijiez.bugger.entities.weapons.Ray;
 
 public class Player extends Entity {
     private static Player instance;
@@ -88,7 +87,7 @@ public class Player extends Entity {
         sprite.setRotation(body.getAngle() * (180f / (float) Math.PI));
     }
 
-    public Arrow shootArrow() {
+    public Ray shootArrow() {
         Vector2 direction = new Vector2();
 
         float mouseX = Gdx.input.getX();
@@ -98,9 +97,9 @@ public class Player extends Entity {
 
         direction.set(mousePosition.x, mousePosition.y).sub(getPosition()).nor();
 
-        Arrow arrow = new Arrow(world, getPosition(), direction);
-        arrow.body.setUserData(arrow);
-        return arrow;
+        Ray ray = new Ray(world, getPosition(), direction);
+        ray.body.setUserData(ray);
+        return ray;
     }
 
 }

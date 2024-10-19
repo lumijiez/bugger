@@ -1,8 +1,6 @@
 package org.lumijiez.bugger;
 
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class GameScreen implements Screen {
     public final Bugger bugger = Bugger.getInstance();
@@ -20,13 +18,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int w, int h) {
-//        float screenAR = w / (float) h;
-//        Bugger.cam = new OrthographicCamera(20, 20 / screenAR);
-//        Bugger.cam.position.set(Bugger.cam.viewportWidth / 2, Bugger.cam.viewportHeight / 2, 0);
-//        Bugger.cam.update();
-//
-//        Bugger.spriteBatch = new SpriteBatch();
-//        Bugger.spriteBatch.setProjectionMatrix(Bugger.cam.combined);
     }
 
     @Override

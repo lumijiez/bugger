@@ -1,8 +1,9 @@
 package org.lumijiez.bugger.handlers;
 
 import com.badlogic.gdx.physics.box2d.*;
+import org.lumijiez.bugger.Bugger;
 import org.lumijiez.bugger.entities.enemies.EnemyEntity;
-import org.lumijiez.bugger.entities.weapons.Arrow;
+import org.lumijiez.bugger.entities.weapons.Ray;
 
 public class GameContactListener implements ContactListener {
     @Override
@@ -15,19 +16,21 @@ public class GameContactListener implements ContactListener {
         }
 
         if (isArrow(fixtureA) && isEntity(fixtureB)) {
-            Arrow arrow = (Arrow) fixtureA.getBody().getUserData();
+            Ray ray = (Ray) fixtureA.getBody().getUserData();
             EnemyEntity enemy = (EnemyEntity) fixtureB.getBody().getUserData();
-            if (arrow != null) {
-                arrow.destroy();
+            if (ray != null) {
+                Bugger.kills++;
+                ray.destroy();
                 enemy.destroy();
             }
         }
 
         if (isArrow(fixtureB) && isEntity(fixtureA)) {
-            Arrow arrow = (Arrow) fixtureB.getBody().getUserData();
+            Ray ray = (Ray) fixtureB.getBody().getUserData();
             EnemyEntity enemy = (EnemyEntity) fixtureA.getBody().getUserData();
-            if (arrow != null) {
-                arrow.destroy();
+            if (ray != null) {
+                Bugger.kills++;
+                ray.destroy();
                 enemy.destroy();
             }
         }
@@ -47,7 +50,7 @@ public class GameContactListener implements ContactListener {
     }
 
     private boolean isArrow(Fixture fixture) {
-        return fixture.getBody().getUserData() instanceof Arrow;
+        return fixture.getBody().getUserData() instanceof Ray;
     }
 
     private boolean isEntity(Fixture fixture) {

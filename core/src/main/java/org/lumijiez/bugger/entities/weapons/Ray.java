@@ -4,10 +4,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import org.lumijiez.bugger.Bugger;
 
-public class Arrow extends Projectile {
+public class Ray extends Projectile {
 
-    public Arrow(World world, Vector2 position, Vector2 direction) {
-        super(world, "images/arrow.png", 5f);
+    public Ray(World world, Vector2 position, Vector2 direction) {
+        super(world, "images/blaze.png", 5f);
 
         Vector2 offsetPosition = position.cpy().add(direction.nor().scl(size + 1f));
 
