@@ -2,19 +2,16 @@ package org.lumijiez.bugger;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import org.lumijiez.bugger.entities.Player;
 import org.lumijiez.bugger.handlers.*;
-import org.lumijiez.bugger.handlers.ParticleHandler;
-import org.lumijiez.bugger.handlers.SpaceVFXHandler;
 
 public class Bugger {
     private static Bugger instance;
-    private final World world = new World(new Vector2(0, 0), true);;
+    private final World world = new World(new Vector2(0, 0), true);
     private final Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
     public static SpriteBatch spriteBatch = new SpriteBatch();
     public static SpriteBatch uiBatch = new SpriteBatch();
