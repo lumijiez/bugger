@@ -15,8 +15,7 @@ import org.lumijiez.bugger.entities.Player;
 import org.lumijiez.bugger.entities.enemies.*;
 import org.lumijiez.bugger.entities.weapons.Ray;
 import org.lumijiez.bugger.entities.weapons.Projectile;
-import org.lumijiez.bugger.factories.EnemyFactory;
-import org.lumijiez.bugger.handlers.GameContactListener;
+import org.lumijiez.bugger.handlers.*;
 import org.lumijiez.bugger.vfx.ParticleManager;
 import org.lumijiez.bugger.vfx.SpaceBackground;
 
@@ -25,35 +24,24 @@ import java.util.List;
 
 public class Bugger {
     private static Bugger instance;
-    private final World world;
-    private final SpaceBackground spaceBackground;
-    private final Array<Projectile> projectiles;
-    private final List<EnemyEntity> enemies;
-    private final Array<Entity> entitiesToDestroy;
-    private final Player player;
-    private float enemySpawnTimer = 0f;
-    private static final float ENEMY_SPAWN_INTERVAL = 0.5f;
-    private final Box2DDebugRenderer debugRenderer;
+    private final World world = new World(new Vector2(0, 0), true);;
+    private final SpaceBackground spaceBackground = new SpaceBackground();
+    private final Array<Projectile> projectiles = new Array<>();
+    private final List<EnemyEntity> enemies = new ArrayList<>();
+    private final Array<Entity> entitiesToDestroy = new Array<>();
+    private final Box2DDebugRenderer debugRenderer = new Box2DDebugRenderer();
+    public static SpriteBatch spriteBatch = new SpriteBatch();
+    public static SpriteBatch uiBatch = new SpriteBatch();
     public static OrthographicCamera cam;
     public static OrthographicCamera uiCam;
-    public static SpriteBatch spriteBatch;
-    public static SpriteBatch uiBatch;
+    private final Player player;
     public static int kills = 0;
-    private final BitmapFont bitmapFont;
 
     private Bugger() {
-        bitmapFont = new BitmapFont(Gdx.files.internal("EA.fnt"), Gdx.files.internal("EA.png"), false);
-        world = new World(new Vector2(0, 0), true);
-        this.projectiles = new Array<>();
-        this.entitiesToDestroy = new Array<>();
-        this.enemies = new ArrayList<>();
-        this.spaceBackground = new SpaceBackground();
         this.player = Player.getInstance();
         this.player.setPlayer(world, 100, 100);
         this.world.setContactListener(new GameContactListener());
-        this.debugRenderer = new Box2DDebugRenderer();
-        spriteBatch = new SpriteBatch();
-        uiBatch = new SpriteBatch();
+
         cam = new OrthographicCamera(160, 90);
         cam.position.set(Player.getInstance().getPosition().x / 2f, Player.getInstance().getPosition().y / 2f, 0);
         cam.update();
@@ -80,44 +68,22 @@ public class Bugger {
         cycleEnemies();
         cycleParticles(delta);
 
-        clearEntities();
+        EntityCleaner.getInstance().tryClean();
 
-        cam.position.set(player.getBody().getPosition().x, player.getBody().getPosition().y, 0);
-        cam.update();
+        updateCamera();
 
         renderPlayer();
         renderEnemies(delta);
-        // renderDebug();
+//        renderDebug();
 
+        UIRenderer.getInstance().renderUI();
+        InputHandler.getInstance().handleInput();
+    }
+
+    public void updateCamera() {
+        cam.position.set(player.getBody().getPosition().x, player.getBody().getPosition().y, 0);
+        cam.update();
         spriteBatch.setProjectionMatrix(cam.combined);
-
-        uiBatch.begin();
-
-        uiBatch.setColor(1, 1, 1, 1);
-        bitmapFont.draw(uiBatch, String.format("Speed: %.2f", Player.getInstance().getBody().getLinearVelocity().len()),
-            10, uiCam.viewportHeight - 10);
-        bitmapFont.draw(uiBatch, "Kills: " + kills, 10, uiCam.viewportHeight - 40);
-
-        bitmapFont.setColor(0, 1, 0, 1);
-
-
-        bitmapFont.draw(uiBatch, "Enemies: " + enemies.size(), 10, uiCam.viewportHeight - 70);
-        bitmapFont.draw(uiBatch, "Projectiles: " + projectiles.size, 10, uiCam.viewportHeight - 100);
-        bitmapFont.draw(uiBatch, "Entities to Destroy: " + entitiesToDestroy.size, 10, uiCam.viewportHeight - 130);
-        bitmapFont.draw(uiBatch, String.format("Player Pos: (%.2f, %.2f)",
-            Player.getInstance().getBody().getPosition().x,
-            Player.getInstance().getBody().getPosition().y), 10, uiCam.viewportHeight - 160);
-        bitmapFont.draw(uiBatch, "Bodies: " + world.getBodyCount(), 10, uiCam.viewportHeight - 190);
-        bitmapFont.draw(uiBatch, "Proxies: " + world.getProxyCount(), 10, uiCam.viewportHeight - 220);
-
-        bitmapFont.setColor(1, 1, 1, 1);
-
-        uiBatch.end();
-
-
-        uiBatch.setProjectionMatrix(uiCam.combined);
-        uiCam.update();
-        handleInput();
     }
 
     public void renderBackground() {
@@ -125,17 +91,8 @@ public class Bugger {
     }
 
     public void renderEnemies(float delta) {
-
-        enemySpawnTimer += delta;
-        if (enemySpawnTimer >= ENEMY_SPAWN_INTERVAL) {
-            enemies.add(EnemyFactory.createRandomEnemy(world, Player.getInstance().getPosition()));
-            enemySpawnTimer = 0;
-        }
-
-        for (EnemyEntity enemy : enemies) {
-            enemy.moveTowards(player.getPosition());
-            enemy.render();
-        }
+        EnemySpawner.getInstance().cycle(delta);
+        for (EnemyEntity enemy : enemies) enemy.cycle();
     }
 
     public void renderPlayer() {
@@ -175,49 +132,35 @@ public class Bugger {
         ParticleManager.getInstance().render(spriteBatch);
     }
 
-    public void clearEntities() {
-        for (Entity entity : entitiesToDestroy) {
-            world.destroyBody(entity.getBody());
-            if (entity instanceof Projectile) {
-                projectiles.removeValue((Projectile) entity, true);
-            }
-            if (entity instanceof EnemyEntity) {
-                playParticle(entity.getBody().getPosition().x, entity.getBody().getPosition().y);
-                enemies.remove(entity);
-            }
-
-        }
-        entitiesToDestroy.clear();
-    }
-
     public void step() {
         world.step(1 / 30f, 6, 2);
     }
 
-    public void playParticle(float x, float y) {
-        ParticleManager.getInstance().playEffect(x, y);
-    }
-
-    public void shoot() {
-        Ray ray = player.shootArrow();
-        projectiles.add(ray);
-    }
-
-    public void handleInput() {
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-            shoot();
-        }
-    }
-
-    public SpriteBatch batch() {
-        return spriteBatch;
-    }
-
     public void dispose() {
-        spriteBatch.dispose();
-        uiBatch.dispose();
-        world.dispose();
-        spaceBackground.dispose();
-        ParticleManager.getInstance().dispose();
+        EntityCleaner.getInstance().disposeAll();
+    }
+
+    public List<EnemyEntity> getEnemies() {
+        return enemies;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public Array<Entity> getEntitiesToDestroy() {
+        return entitiesToDestroy;
+    }
+
+    public Array<Projectile> getProjectiles() {
+        return projectiles;
+    }
+
+    public SpaceBackground getSpaceBackground() {
+        return spaceBackground;
     }
 }

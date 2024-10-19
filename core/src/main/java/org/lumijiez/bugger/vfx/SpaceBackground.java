@@ -49,7 +49,7 @@ public class SpaceBackground {
     }
 
     public void render() {
-        Bugger.getInstance().batch().begin();
+        Bugger.spriteBatch.begin();
 
         float cameraX = Bugger.cam.position.x;
         float cameraY = Bugger.cam.position.y;
@@ -58,7 +58,7 @@ public class SpaceBackground {
         drawGalaxies(cameraX, cameraY);
         drawNebulae(cameraX, cameraY);
 
-        Bugger.getInstance().batch().end();
+        Bugger.spriteBatch.end();
     }
 
     private void drawStars(float cameraX, float cameraY) {
