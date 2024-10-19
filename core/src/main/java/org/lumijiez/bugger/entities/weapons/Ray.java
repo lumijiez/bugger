@@ -7,17 +7,15 @@ import org.lumijiez.bugger.Bugger;
 public class Ray extends Projectile {
 
     public Ray(World world, Vector2 position, Vector2 direction) {
-        super(world, "images/blaze.png", 5f);
+        super(world, position, direction, "images/blaze.png", 5f);
 
-        Vector2 offsetPosition = position.cpy().add(direction.nor().scl(size + 1f));
+        this.body.setUserData(this);
+    }
 
-        this.body = createBody(offsetPosition.x, offsetPosition.y);
+    public Ray(World world, Vector2 position, Vector2 direction, float speed) {
+        super(world, position, direction, "images/blaze.png", 5f, speed);
 
-        this.body.setTransform(offsetPosition, (float) (direction.angleRad() + Math.toRadians(270f)));
-
-        float speed = 5000f;
-
-        this.body.setLinearVelocity(direction.nor().scl(speed));
+        this.body.setUserData(this);
     }
 
     @Override
@@ -30,5 +28,4 @@ public class Ray extends Projectile {
         sprite.draw(Bugger.spriteBatch);
         Bugger.spriteBatch.end();
     }
-
 }

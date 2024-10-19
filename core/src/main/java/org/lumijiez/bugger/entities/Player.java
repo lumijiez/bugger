@@ -87,20 +87,4 @@ public class Player extends Entity {
         body.setTransform(body.getPosition(), angle * (float) Math.PI / 180f);
         sprite.setRotation(body.getAngle() * (180f / (float) Math.PI));
     }
-
-    public Ray shootArrow() {
-        Vector2 direction = new Vector2();
-
-        float mouseX = Gdx.input.getX();
-        float mouseY = Gdx.input.getY();
-
-        Vector3 mousePosition = CameraHandler.getInstance().getCamera().unproject(new Vector3(mouseX, mouseY, 0));
-
-        direction.set(mousePosition.x, mousePosition.y).sub(getPosition()).nor();
-
-        Ray ray = new Ray(world, getPosition(), direction);
-        ray.body.setUserData(ray);
-        return ray;
-    }
-
 }
