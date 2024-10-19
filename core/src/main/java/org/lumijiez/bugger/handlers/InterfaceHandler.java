@@ -7,27 +7,27 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import org.lumijiez.bugger.Bugger;
 import org.lumijiez.bugger.entities.Player;
 
-public class UIRenderer {
+public class InterfaceHandler {
     private final BitmapFont bitmapFont;
-    private static UIRenderer instance;
+    private static InterfaceHandler instance;
 
-    private UIRenderer() {
+    private InterfaceHandler() {
         bitmapFont = new BitmapFont(Gdx.files.internal("EA.fnt"), Gdx.files.internal("EA.png"), false);
     }
 
-    public static UIRenderer getInstance() {
+    public static InterfaceHandler getInstance() {
         if (instance == null) {
-            instance = new UIRenderer();
+            instance = new InterfaceHandler();
         }
         return instance;
     }
 
     public void renderUI() {
         SpriteBatch uiBatch = Bugger.uiBatch;
-        OrthographicCamera uiCam = Bugger.uiCam;
+        OrthographicCamera uiCam = CameraHandler.getInstance().getUICamera();
         int kills = Bugger.kills;
         int enemies = EnemyHandler.getInstance().getEnemies().size();
-        int projectiles = Bugger.getInstance().getProjectiles().size;
+        int projectiles = ProjectileHandler.getInstance().getProjectiles().size;
         int bodies = Bugger.getInstance().getWorld().getBodyCount();
         uiBatch.begin();
 

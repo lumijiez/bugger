@@ -6,27 +6,26 @@ import org.lumijiez.bugger.Bugger;
 import org.lumijiez.bugger.entities.Entity;
 import org.lumijiez.bugger.entities.enemies.EnemyEntity;
 import org.lumijiez.bugger.entities.weapons.Projectile;
-import org.lumijiez.bugger.vfx.ParticleManager;
 
 import java.util.List;
 
-public class EntityCleaner {
+public class CleanupHandler {
     private final Array<Entity> entitiesToDestroy = new Array<>();
 
-    private static EntityCleaner instance;
+    private static CleanupHandler instance;
 
-    private EntityCleaner() {}
+    private CleanupHandler() {}
 
-    public static EntityCleaner getInstance() {
+    public static CleanupHandler getInstance() {
         if (instance == null) {
-            instance = new EntityCleaner();
+            instance = new CleanupHandler();
         }
         return instance;
     }
 
     public void tryClean() {
         Array<Entity> entities = entitiesToDestroy;
-        Array<Projectile> projectiles = Bugger.getInstance().getProjectiles();
+        Array<Projectile> projectiles = ProjectileHandler.getInstance().getProjectiles();
         List<EnemyEntity> enemies = EnemyHandler.getInstance().getEnemies();
         World world = Bugger.getInstance().getWorld();
 
@@ -38,7 +37,7 @@ public class EntityCleaner {
             }
 
             if (entity instanceof EnemyEntity) {
-                ParticleManager.getInstance().playEffect(entity.getBody().getPosition().x, entity.getBody().getPosition().y);
+                ParticleHandler.getInstance().playEffect(entity.getBody().getPosition().x, entity.getBody().getPosition().y);
                 enemies.remove(entity);
             }
 
@@ -54,7 +53,7 @@ public class EntityCleaner {
         Bugger.spriteBatch.dispose();
         Bugger.uiBatch.dispose();
         Bugger.getInstance().getWorld().dispose();
-        Bugger.getInstance().getSpaceBackground().dispose();
-        ParticleManager.getInstance().dispose();
+        SpaceVFXHandler.getInstance().dispose();
+        ParticleHandler.getInstance().dispose();
     }
 }

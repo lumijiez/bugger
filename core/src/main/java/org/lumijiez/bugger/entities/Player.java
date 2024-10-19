@@ -7,6 +7,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.math.Vector2;
 import org.lumijiez.bugger.Bugger;
 import org.lumijiez.bugger.entities.weapons.Ray;
+import org.lumijiez.bugger.handlers.CameraHandler;
 
 public class Player extends Entity {
     private static Player instance;
@@ -78,7 +79,7 @@ public class Player extends Entity {
         float mouseX = Gdx.input.getX();
         float mouseY = Gdx.input.getY();
 
-        Vector3 mousePosition = Bugger.cam.unproject(new Vector3(mouseX, mouseY, 0));
+        Vector3 mousePosition = CameraHandler.getInstance().getCamera().unproject(new Vector3(mouseX, mouseY, 0));
 
         Vector2 direction = new Vector2(mousePosition.x, mousePosition.y).sub(body.getPosition()).nor();
 
@@ -93,7 +94,7 @@ public class Player extends Entity {
         float mouseX = Gdx.input.getX();
         float mouseY = Gdx.input.getY();
 
-        Vector3 mousePosition = Bugger.cam.unproject(new Vector3(mouseX, mouseY, 0));
+        Vector3 mousePosition = CameraHandler.getInstance().getCamera().unproject(new Vector3(mouseX, mouseY, 0));
 
         direction.set(mousePosition.x, mousePosition.y).sub(getPosition()).nor();
 

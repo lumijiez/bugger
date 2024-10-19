@@ -1,11 +1,20 @@
-package org.lumijiez.bugger.vfx;
+package org.lumijiez.bugger.handlers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import org.lumijiez.bugger.Bugger;
 
-public class SpaceBackground {
+public class SpaceVFXHandler {
+    private static SpaceVFXHandler instance;
+
+    public static SpaceVFXHandler getInstance() {
+        if (instance == null) {
+            instance = new SpaceVFXHandler();
+        }
+        return instance;
+    }
+
     private final Texture starTexture;
     private final Texture galaxyTexture;
     private final Texture nebulaTexture;
@@ -20,7 +29,7 @@ public class SpaceBackground {
     private final int numNebulae = 20;
     private final float scaleFactor = 0.1f;
 
-    public SpaceBackground() {
+    private SpaceVFXHandler() {
         starTexture = new Texture(Gdx.files.internal("images/star.png"));
         galaxyTexture = new Texture(Gdx.files.internal("images/galaxy.png"));
         nebulaTexture = new Texture(Gdx.files.internal("images/nebula.png"));
@@ -51,8 +60,8 @@ public class SpaceBackground {
     public void render() {
         Bugger.spriteBatch.begin();
 
-        float cameraX = Bugger.cam.position.x;
-        float cameraY = Bugger.cam.position.y;
+        float cameraX = CameraHandler.getInstance().getCamera().position.x;
+        float cameraY = CameraHandler.getInstance().getCamera().position.y;
 
         drawStars(cameraX, cameraY);
         drawGalaxies(cameraX, cameraY);

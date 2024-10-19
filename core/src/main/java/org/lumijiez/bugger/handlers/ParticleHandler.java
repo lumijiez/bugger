@@ -1,4 +1,4 @@
-package org.lumijiez.bugger.vfx;
+package org.lumijiez.bugger.handlers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
@@ -7,12 +7,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import org.lumijiez.bugger.Bugger;
 
-public class ParticleManager {
-    private static ParticleManager instance;
+public class ParticleHandler {
+    private static ParticleHandler instance;
     private final ParticleEffectPool particleEffectPool;
     private final Array<ParticleEffectPool.PooledEffect> activeEffects;
 
-    private ParticleManager() {
+    private ParticleHandler() {
         ParticleEffect effect = new ParticleEffect();
         effect.load(Gdx.files.internal("particles/boom.p"), Gdx.files.internal("particles"));
         effect.scaleEffect(0.3f);
@@ -20,9 +20,9 @@ public class ParticleManager {
         activeEffects = new Array<>();
     }
 
-    public static ParticleManager getInstance() {
+    public static ParticleHandler getInstance() {
         if (instance == null) {
-            instance = new ParticleManager();
+            instance = new ParticleHandler();
         }
         return instance;
     }
@@ -58,5 +58,10 @@ public class ParticleManager {
             effect.free();
         }
         activeEffects.clear();
+    }
+
+    public void cycle(float delta) {
+        update(delta);
+        render(Bugger.spriteBatch);
     }
 }

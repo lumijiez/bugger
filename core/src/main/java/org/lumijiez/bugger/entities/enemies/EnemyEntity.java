@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import org.lumijiez.bugger.Bugger;
 import org.lumijiez.bugger.entities.Entity;
+import org.lumijiez.bugger.entities.Player;
 
 public class EnemyEntity extends Entity {
     public EnemyEntity(World world, String texturePath, float size) {
@@ -15,7 +16,7 @@ public class EnemyEntity extends Entity {
     }
 
     public void update() {
-        Vector2 playerPos = Bugger.getInstance().getPlayer().getPosition();
+        Vector2 playerPos = Player.getInstance().getPosition();
         follow(playerPos);
     }
 

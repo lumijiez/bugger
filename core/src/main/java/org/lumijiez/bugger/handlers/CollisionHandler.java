@@ -5,7 +5,7 @@ import org.lumijiez.bugger.Bugger;
 import org.lumijiez.bugger.entities.enemies.EnemyEntity;
 import org.lumijiez.bugger.entities.weapons.Ray;
 
-public class GameContactListener implements ContactListener {
+public class CollisionHandler implements ContactListener {
     @Override
     public void beginContact(Contact contact) {
         Fixture fixtureA = contact.getFixtureA();

@@ -3,6 +3,7 @@ package org.lumijiez.bugger.handlers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import org.lumijiez.bugger.Bugger;
+import org.lumijiez.bugger.entities.Player;
 import org.lumijiez.bugger.entities.weapons.Ray;
 
 public class InputHandler {
@@ -19,8 +20,8 @@ public class InputHandler {
 
     public void handleInput() {
         if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-            Ray ray = Bugger.getInstance().getPlayer().shootArrow();
-            Bugger.getInstance().getProjectiles().add(ray);
+            Ray ray = Player.getInstance().shootArrow();
+            ProjectileHandler.getInstance().getProjectiles().add(ray);
         }
     }
 }
