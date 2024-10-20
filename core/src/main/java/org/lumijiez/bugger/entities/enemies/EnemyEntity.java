@@ -5,8 +5,12 @@ import com.badlogic.gdx.physics.box2d.World;
 import org.lumijiez.bugger.Bugger;
 import org.lumijiez.bugger.entities.Entity;
 import org.lumijiez.bugger.entities.Player;
+import org.lumijiez.bugger.handlers.EnemyProjectileHandler;
+import org.lumijiez.bugger.handlers.ProjectileHandler;
 
 public class EnemyEntity extends Entity {
+    private float shootTimer = 0.0f;
+
     public EnemyEntity(World world, String texturePath, float size) {
         super(world, texturePath, size);
     }
@@ -27,6 +31,14 @@ public class EnemyEntity extends Entity {
 
         float angle = direction.angleDeg() + 270f;
         body.setTransform(body.getPosition(), angle * (float) Math.PI / 180f);
+
+        shootTimer += Bugger.deltaTime;
+
+        float shootCooldown = 2.0f;
+        if (shootTimer >= shootCooldown) {
+            EnemyProjectileHandler.getInstance().shootEnemyProjectile(this.body.getPosition(), playerPos, 50f);
+            shootTimer = 0.0f;
+        }
     }
 
     public void cycle(Vector2 target) {

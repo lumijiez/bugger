@@ -11,13 +11,14 @@ import org.lumijiez.bugger.entities.weapons.Ray;
 public class ProjectileHandler {
     private final Array<Ray> deployedProjectiles = new Array<>();
     private final Array<Ray> freeProjectiles = new Array<>();
+    private final Array<Ray> deployedEnemyProjectiles = new Array<>();
+    private final Array<Ray> freeEnemyProjectiles = new Array<>();
     private static ProjectileHandler instance;
-
     private static final int INITIAL_PROJECTILES = 50;
 
     private ProjectileHandler() {
         for (int i = 0; i < INITIAL_PROJECTILES; i++) {
-            freeProjectiles.add(new Ray(Bugger.getInstance().getWorld()));
+            freeProjectiles.add(new Ray(Bugger.getInstance().getWorld(), false));
         }
     }
 
@@ -50,7 +51,6 @@ public class ProjectileHandler {
         float mouseY = Gdx.input.getY();
 
         Vector3 mousePosition = CameraHandler.getInstance().getCamera().unproject(new Vector3(mouseX, mouseY, 0));
-
         Vector2 playerPos = Player.getInstance().getPosition();
         direction.set(mousePosition.x, mousePosition.y).sub(playerPos).nor();
 
@@ -69,11 +69,15 @@ public class ProjectileHandler {
             return;
         }
 
-        projectile.init(position, direction.nor().scl(speed));
+        projectile.init(position, direction.nor().scl(speed), false);
         deployedProjectiles.add(projectile);
     }
 
     public Array<Ray> getDeployedProjectiles() {
         return deployedProjectiles;
+    }
+
+    public Array<Ray> getDeployedEnemyProjectiles() {
+        return deployedEnemyProjectiles;
     }
 }

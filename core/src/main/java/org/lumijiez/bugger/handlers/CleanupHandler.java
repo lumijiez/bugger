@@ -5,7 +5,6 @@ import com.badlogic.gdx.utils.Array;
 import org.lumijiez.bugger.Bugger;
 import org.lumijiez.bugger.entities.Entity;
 import org.lumijiez.bugger.entities.enemies.EnemyEntity;
-import org.lumijiez.bugger.entities.weapons.Projectile;
 
 import java.util.List;
 
@@ -37,7 +36,7 @@ public class CleanupHandler {
 //            }
 
             if (entity instanceof EnemyEntity) {
-                ParticleHandler.getInstance().playEffect(entity.getBody().getPosition().x, entity.getBody().getPosition().y);
+                ParticleHandler.getInstance().playBigBoom(entity.getBody().getPosition().x, entity.getBody().getPosition().y);
                 enemies.remove(entity);
             }
 

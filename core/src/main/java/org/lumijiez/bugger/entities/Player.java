@@ -2,6 +2,7 @@ package org.lumijiez.bugger.entities;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.math.Vector2;
@@ -9,8 +10,12 @@ import org.lumijiez.bugger.Bugger;
 import org.lumijiez.bugger.entities.weapons.Ray;
 import org.lumijiez.bugger.handlers.CameraHandler;
 
+import static org.lumijiez.bugger.Bugger.shapeRenderer;
+
 public class Player extends Entity {
     private static Player instance;
+
+    private int health = 1000;
 
     private Player() {
         super(null, "images/wasp.png", 10f);
@@ -49,6 +54,7 @@ public class Player extends Entity {
     public void setPlayer(World world, float x, float y) {
         this.world = world;
         this.body = createBody(x, y);
+        this.body.setUserData(this);
     }
 
     public void move(float deltaX, float deltaY) {
@@ -61,6 +67,7 @@ public class Player extends Entity {
         handleInput();
         updateSpriteRotation();
         super.render();
+        renderHealthBar();
     }
 
     public void handleInput() {
@@ -86,5 +93,30 @@ public class Player extends Entity {
         float angle = direction.angleDeg() + 270f;
         body.setTransform(body.getPosition(), angle * (float) Math.PI / 180f);
         sprite.setRotation(body.getAngle() * (180f / (float) Math.PI));
+    }
+
+    public void damage(int damage) {
+        health -= damage;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    private void renderHealthBar() {
+        float maxHealth = 1000f;
+        float healthPercentage = Math.max(health / maxHealth, 0);
+        float healthBarWidth = 8f;
+        float healthBarHeight = 1f;
+        float healthBarX = body.getPosition().x - healthBarWidth / 2;
+        float healthBarY = body.getPosition().y + size - 17;
+
+        shapeRenderer.setProjectionMatrix(CameraHandler.getInstance().getCamera().combined);
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        shapeRenderer.setColor(1, 0, 0, 1);
+        shapeRenderer.rect(healthBarX, healthBarY, healthBarWidth * healthPercentage, healthBarHeight);
+
+        shapeRenderer.end();
     }
 }

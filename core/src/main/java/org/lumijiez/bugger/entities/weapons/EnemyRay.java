@@ -1,23 +1,23 @@
 package org.lumijiez.bugger.entities.weapons;
 
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.World;
 import org.lumijiez.bugger.Bugger;
 
-public class Ray extends Projectile {
+public class EnemyRay extends EnemyProjectile {
     float speed = 5000f;
 
-    public Ray(World world, boolean isEnemy) {
-        super(world,"images/blaze.png", 5f, isEnemy);
+    public EnemyRay(World world, boolean isEnemy) {
+        super(world,"images/enemyblaze.png", 5f, isEnemy);
     }
 
-    public Ray(World world, Vector2 position, Vector2 direction) {
-        super(world, position, direction, "images/blaze.png", 5f);
+    public EnemyRay(World world, Vector2 position, Vector2 direction) {
+        super(world, position, direction, "images/enemyblaze.png", 5f);
         this.body.setUserData(this);
     }
 
-    public Ray(World world, Vector2 position, Vector2 direction, float speed) {
-        super(world, position, direction, "images/blaze.png", 5f, speed);
+    public EnemyRay(World world, Vector2 position, Vector2 direction, float speed) {
+        super(world, position, direction, "images/enemyblaze.png", 5f, speed);
         this.speed = speed;
         this.body.setUserData(this);
     }

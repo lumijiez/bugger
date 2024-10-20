@@ -4,18 +4,18 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import org.lumijiez.bugger.entities.Entity;
 
-public abstract class Projectile extends Entity {
+public abstract class EnemyProjectile extends Entity {
 
     protected float timeAlive = 0f;
     protected boolean isEnemy = false;
 
-    public Projectile(World world, String texturePath, float size, boolean isEnemy) {
+    public EnemyProjectile(World world, String texturePath, float size, boolean isEnemy) {
         super(world, texturePath, size);
         this.isEnemy = isEnemy;
         this.body = createBody(0, 0);
     }
 
-    public Projectile(World world, Vector2 position, Vector2 direction, String texturePath, float size) {
+    public EnemyProjectile(World world, Vector2 position, Vector2 direction, String texturePath, float size) {
         super(world, texturePath, size);
         Vector2 offsetPosition = position.cpy().add(direction.nor().scl(size + 1f));
         this.body = createBody(offsetPosition.x, offsetPosition.y);
@@ -23,7 +23,7 @@ public abstract class Projectile extends Entity {
         this.body.setLinearVelocity(direction.nor().scl(5000f));
     }
 
-    public Projectile(World world, Vector2 position, Vector2 direction, String texturePath, float size, float speed) {
+    public EnemyProjectile(World world, Vector2 position, Vector2 direction, String texturePath, float size, float speed) {
         super(world, texturePath, size);
         Vector2 offsetPosition = position.cpy().add(direction.nor().scl(size + 1f));
         this.body = createBody(offsetPosition.x, offsetPosition.y);
@@ -41,7 +41,7 @@ public abstract class Projectile extends Entity {
 
         Body body = world.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(size / 2, size + 5);
+        shape.setAsBox(size / 3, size + 2);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
