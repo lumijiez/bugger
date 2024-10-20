@@ -235,6 +235,11 @@
 
 
 ## Conclusions / Screenshots / Results
+d![image](https://github.com/user-attachments/assets/728df0c8-9245-4778-99a9-d655e5792ef0)
+![image](https://github.com/user-attachments/assets/6497e630-976c-4670-a907-99c6d1360346)
+You can see in the debugger, that Projectiles are capped at 100 due to object pooling
+![image](https://github.com/user-attachments/assets/1ceeeb8f-a445-460a-897e-dc69e0bf8c00)
+
 
 In this project, various design patterns have been implemented to enhance code organization, improve performance, and simplify maintenance. The Singleton pattern ensures that essential classes, such as `EnemyHandler`, `ParticleHandler`, and `InputHandler`, have a single, global instance that provides centralized access to crucial game components. This pattern promotes efficient resource management and minimizes potential conflicts from multiple instances.
 
