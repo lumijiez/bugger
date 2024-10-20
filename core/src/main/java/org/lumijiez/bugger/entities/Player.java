@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.math.Vector2;
-import org.lumijiez.bugger.Bugger;
-import org.lumijiez.bugger.entities.weapons.Ray;
 import org.lumijiez.bugger.handlers.CameraHandler;
 
 import static org.lumijiez.bugger.Bugger.shapeRenderer;
@@ -99,10 +97,6 @@ public class Player extends Entity {
         health -= damage;
     }
 
-    public int getHealth() {
-        return health;
-    }
-
     private void renderHealthBar() {
         float maxHealth = 1000f;
         float healthPercentage = Math.max(health / maxHealth, 0);
@@ -113,6 +107,9 @@ public class Player extends Entity {
 
         shapeRenderer.setProjectionMatrix(CameraHandler.getInstance().getCamera().combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+        shapeRenderer.setColor(0.3f, 0.3f, 0.3f, 1);
+        shapeRenderer.rect(healthBarX, healthBarY, healthBarWidth , healthBarHeight);
 
         shapeRenderer.setColor(1, 0, 0, 1);
         shapeRenderer.rect(healthBarX, healthBarY, healthBarWidth * healthPercentage, healthBarHeight);

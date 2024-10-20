@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Action;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import org.lumijiez.bugger.entities.Player;
 import org.lumijiez.bugger.handlers.*;
 
@@ -21,7 +19,6 @@ public class Bugger {
     public static SpriteBatch spriteBatch = new SpriteBatch();
     public static SpriteBatch uiBatch = new SpriteBatch();
     public static int kills = 0;
-    private boolean logoPlayed = false;
 
     private Bugger() {
         Player.getInstance().setPlayer(world, 100, 100);
@@ -54,7 +51,8 @@ public class Bugger {
         Player.getInstance().render();
 
         EnemyHandler.getInstance().render(delta);
-//        renderDebug();
+
+        if (InterfaceHandler.getInstance().isDebug()) renderDebug();
 
         InterfaceHandler.getInstance().renderUI();
         InputHandler.getInstance().handleInput();
@@ -70,7 +68,7 @@ public class Bugger {
     }
 
     public void step() {
-        world.step(1 / 30f, 6, 2);
+        world.step((float) 1 / 30f, 6, 2);
     }
 
     public void dispose() {

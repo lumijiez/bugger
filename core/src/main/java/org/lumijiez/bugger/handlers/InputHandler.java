@@ -22,6 +22,10 @@ public class InputHandler {
             ProjectileHandler.getInstance().shootRay();
         }
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
+            InterfaceHandler.getInstance().toggleDebug();
+        }
+
         if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
             float numRays = 8;
             float radius = 0.5f;
@@ -44,15 +48,13 @@ public class InputHandler {
                 Vector2 direction = new Vector2(x, y).add(Player.getInstance().getPosition());
                 Vector2 shootDirection = direction.cpy().sub(Player.getInstance().getPosition()).nor();
 
-                Gdx.app.postRunnable(() -> {
-                    ProjectileHandler.getInstance().shootRay(Player.getInstance().getPosition(), shootDirection, 20f);
-                });
+                Gdx.app.postRunnable(() -> ProjectileHandler.getInstance().shootRay(Player.getInstance().getPosition(), shootDirection, 20f));
 
                 try {
                     float delay = (2f / raysPerCircle) * 500;
                     Thread.sleep((long) delay);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    System.out.println(e.getMessage());
                 }
             }
         }).start();

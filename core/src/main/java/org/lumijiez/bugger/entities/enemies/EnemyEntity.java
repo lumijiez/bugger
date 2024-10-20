@@ -6,7 +6,6 @@ import org.lumijiez.bugger.Bugger;
 import org.lumijiez.bugger.entities.Entity;
 import org.lumijiez.bugger.entities.Player;
 import org.lumijiez.bugger.handlers.EnemyProjectileHandler;
-import org.lumijiez.bugger.handlers.ProjectileHandler;
 
 public class EnemyEntity extends Entity {
     private float shootTimer = 0.0f;
@@ -15,9 +14,9 @@ public class EnemyEntity extends Entity {
         super(world, texturePath, size);
     }
 
-    public void update(Vector2 target) {
-        follow(target);
-    }
+//    public void update(Vector2 target) {
+//        follow(target);
+//    }
 
     public void update() {
         Vector2 playerPos = Player.getInstance().getPosition();
@@ -36,15 +35,15 @@ public class EnemyEntity extends Entity {
 
         float shootCooldown = 2.0f;
         if (shootTimer >= shootCooldown) {
-            EnemyProjectileHandler.getInstance().shootEnemyProjectile(this.body.getPosition(), playerPos, 50f);
+            EnemyProjectileHandler.getInstance().shootEnemyProjectile(this.body.getPosition(), 50f);
             shootTimer = 0.0f;
         }
     }
 
-    public void cycle(Vector2 target) {
-        update(target);
-        render();
-    }
+//    public void cycle(Vector2 target) {
+//        update(target);
+//        render();
+//    }
 
     public void cycle() {
         update();
