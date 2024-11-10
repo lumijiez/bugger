@@ -64,7 +64,7 @@ public class Player extends Entity {
     public void render() {
         handleInput();
         updateSpriteRotation();
-        super.render();
+        super.render(0, 0);
         renderHealthBar();
     }
 

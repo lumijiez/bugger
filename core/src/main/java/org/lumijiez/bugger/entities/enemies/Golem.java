@@ -5,7 +5,7 @@ import com.badlogic.gdx.physics.box2d.World;
 
 import java.util.Random;
 
-public class Golem extends EnemyEntity{
+public class Golem extends EnemyEntity {
     private static final Random random = new Random();
 
     public Golem(World world, Vector2 playerPosition) {

@@ -37,9 +37,9 @@ public abstract class Entity {
         return body;
     }
 
-    public void render() {
+    public void render(int sizeOffsetX, int sizeOffsetY) {
         sprite.setOrigin(size / 2, size / 2);
-        sprite.setSize(size, size);
+        sprite.setSize(size + sizeOffsetX, size + sizeOffsetY);
         sprite.setPosition(body.getPosition().x - size / 2, body.getPosition().y - size / 2);
         sprite.setRotation(body.getAngle() * (180f / (float) Math.PI));
         Bugger.spriteBatch.begin();

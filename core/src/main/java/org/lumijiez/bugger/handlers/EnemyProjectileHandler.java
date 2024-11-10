@@ -3,15 +3,15 @@ package org.lumijiez.bugger.handlers;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import org.lumijiez.bugger.entities.Player;
-import org.lumijiez.bugger.entities.weapons.EnemyRay;
-import org.lumijiez.bugger.pools.EnemyProjectilePool;
+import org.lumijiez.bugger.entities.weapons.Projectile;
+import org.lumijiez.bugger.pools.ProjectilePool;
 
 public class EnemyProjectileHandler {
     private static EnemyProjectileHandler instance;
-    private final EnemyProjectilePool projectilePool;
+    private final ProjectilePool projectilePool;
 
     private EnemyProjectileHandler() {
-        projectilePool = new EnemyProjectilePool(true);
+        projectilePool = new ProjectilePool(true);
     }
 
     public static EnemyProjectileHandler getInstance() {
@@ -28,14 +28,14 @@ public class EnemyProjectileHandler {
     public void shootEnemyProjectile(Vector2 position, float speed) {
         Vector2 playerPos = Player.getInstance().getPosition();
         Vector2 shootDirection = playerPos.cpy().sub(position).nor();
-        EnemyRay projectile = projectilePool.obtain();
+        Projectile projectile = projectilePool.obtain();
 
         if (projectile != null) {
             projectile.init(position, shootDirection.scl(speed), true);
         }
     }
 
-    public Array<EnemyRay> getDeployedEnemyProjectiles() {
+    public Array<Projectile> getDeployedEnemyProjectiles() {
         return projectilePool.getDeployedProjectiles();
     }
 }

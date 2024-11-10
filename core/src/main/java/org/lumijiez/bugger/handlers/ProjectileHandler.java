@@ -5,7 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import org.lumijiez.bugger.entities.Player;
-import org.lumijiez.bugger.entities.weapons.Ray;
+import org.lumijiez.bugger.entities.weapons.Projectile;
 import org.lumijiez.bugger.pools.ProjectilePool;
 
 public class ProjectileHandler {
@@ -41,13 +41,13 @@ public class ProjectileHandler {
     }
 
     public void shootRay(Vector2 position, Vector2 direction, float speed) {
-        Ray projectile = projectilePool.obtain();
+        Projectile projectile = projectilePool.obtain();
         if (projectile != null) {
             projectile.init(position, direction.nor().scl(speed), false);
         }
     }
 
-    public Array<Ray> getDeployedProjectiles() {
+    public Array<Projectile> getDeployedProjectiles() {
         return projectilePool.getDeployedProjectiles();
     }
 }

@@ -14,10 +14,6 @@ public class EnemyEntity extends Entity {
         super(world, texturePath, size);
     }
 
-//    public void update(Vector2 target) {
-//        follow(target);
-//    }
-
     public void update() {
         Vector2 playerPos = Player.getInstance().getPosition();
         follow(playerPos);
@@ -40,17 +36,12 @@ public class EnemyEntity extends Entity {
         }
     }
 
-//    public void cycle(Vector2 target) {
-//        update(target);
-//        render();
-//    }
-
     public void cycle() {
         update();
         render();
     }
 
     public void render() {
-        super.render();
+        super.render(0,0);
     }
 }

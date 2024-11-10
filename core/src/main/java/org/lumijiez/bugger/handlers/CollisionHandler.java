@@ -5,88 +5,81 @@ import com.badlogic.gdx.physics.box2d.*;
 import org.lumijiez.bugger.Bugger;
 import org.lumijiez.bugger.entities.Player;
 import org.lumijiez.bugger.entities.enemies.EnemyEntity;
-import org.lumijiez.bugger.entities.weapons.EnemyProjectile;
-import org.lumijiez.bugger.entities.weapons.EnemyRay;
-import org.lumijiez.bugger.entities.weapons.Ray;
+import org.lumijiez.bugger.entities.weapons.Projectile;
+import org.lumijiez.bugger.util.CollisionAction;
+import org.lumijiez.bugger.util.CollisionPair;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class CollisionHandler implements ContactListener {
+
+    private final List<Map.Entry<CollisionPair, CollisionAction>> collisionHandlers = new ArrayList<>();
+
+    public CollisionHandler() {
+        initializeCollisionHandlers();
+    }
+
+    private void initializeCollisionHandlers() {
+        registerCollisionHandler(Projectile.class, Player.class, (rayObj, playerObj) -> {
+            Projectile ray = (Projectile) rayObj;
+            if (ray.isEnemy()) handlePlayerHit(ray);
+        });
+
+        registerCollisionHandler(Projectile.class, EnemyEntity.class, (rayObj, enemyObj) -> {
+            Projectile ray = (Projectile) rayObj;
+            EnemyEntity enemy = (EnemyEntity) enemyObj;
+            if (!ray.isEnemy()) handleEnemyHit(ray, enemy);
+        });
+    }
+
+    private void registerCollisionHandler(Class<?> typeA, Class<?> typeB, CollisionAction action) {
+        CollisionPair pair = new CollisionPair(typeA, typeB);
+        collisionHandlers.add(Map.entry(pair, action));
+
+        CollisionPair reversePair = new CollisionPair(typeB, typeA);
+        collisionHandlers.add(Map.entry(reversePair, (objA, objB) -> action.handle(objB, objA)));
+    }
+
+    private void handlePlayerHit(Projectile ray) {
+        ray.destroy();
+        Player.getInstance().damage(50);
+        ParticleHandler instance = ParticleHandler.getInstance();
+        Player player = Player.getInstance();
+
+        instance.playSmallBoom(player.getPosition().x, player.getPosition().y);
+        instance.playHit(Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 60);
+    }
+
+    private void handleEnemyHit(Projectile ray, EnemyEntity enemy) {
+        Bugger.kills++;
+        ray.destroy();
+        enemy.destroy();
+    }
+
     @Override
     public void beginContact(Contact contact) {
-        Fixture fixtureA = contact.getFixtureA();
-        Fixture fixtureB = contact.getFixtureB();
+        Object userDataA = contact.getFixtureA().getBody().getUserData();
+        Object userDataB = contact.getFixtureB().getBody().getUserData();
 
-        Object userDataA = fixtureA.getBody().getUserData();
-        Object userDataB = fixtureB.getBody().getUserData();
+        if (userDataA == null || userDataB == null) return;
 
-        if (isEnemy(fixtureA) && isPlayer(fixtureB)) {
-            EnemyRay ray = (EnemyRay) userDataA;
-            if (ray.isEnemy()) {
-                ray.destroy();
-                Player.getInstance().damage(50);
-                ParticleHandler.getInstance().playSmallBoom(Player.getInstance().getPosition().x, Player.getInstance().getPosition().y);
-                ParticleHandler.getInstance().playHit(Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 60);
-            }
-        }
-
-        if (isEnemy(fixtureB) && isPlayer(fixtureA)) {
-            EnemyRay ray = (EnemyRay) userDataB;
-            if (ray.isEnemy()) {
-                ray.destroy();
-                Player.getInstance().damage(50);
-                ParticleHandler.getInstance().playSmallBoom(Player.getInstance().getPosition().x, Player.getInstance().getPosition().y);
-                ParticleHandler.getInstance().playHit(Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 60);
-            }
-        }
-
-
-
-        if (isArrow(fixtureA) && isEntity(fixtureB)) {
-            Ray ray = (Ray) fixtureA.getBody().getUserData();
-            EnemyEntity enemy = (EnemyEntity) fixtureB.getBody().getUserData();
-            if (ray != null && !ray.isEnemy()) {
-                Bugger.kills++;
-                ray.destroy();
-                enemy.destroy();
-            }
-        }
-
-        if (isArrow(fixtureB) && isEntity(fixtureA)) {
-            Ray ray = (Ray) fixtureB.getBody().getUserData();
-            EnemyEntity enemy = (EnemyEntity) fixtureA.getBody().getUserData();
-            if (ray != null && !ray.isEnemy()) {
-                Bugger.kills++;
-                ray.destroy();
-                enemy.destroy();
+        for (var entry : collisionHandlers) {
+            CollisionPair pair = entry.getKey();
+            if (pair.matches(userDataA, userDataB)) {
+                entry.getValue().handle(userDataA, userDataB);
+                return;
             }
         }
     }
 
     @Override
-    public void endContact(Contact contact) {
-    }
+    public void endContact(Contact contact) {}
 
     @Override
-    public void preSolve(Contact contact, Manifold manifold) {
-
-    }
+    public void preSolve(Contact contact, Manifold manifold) {}
 
     @Override
-    public void postSolve(Contact contact, ContactImpulse impulse) {
-    }
-
-    private boolean isArrow(Fixture fixture) {
-        return fixture.getBody().getUserData() instanceof Ray;
-    }
-
-    private boolean isEnemy(Fixture fixture) {
-        return fixture.getBody().getUserData() instanceof EnemyProjectile;
-    }
-
-    private boolean isPlayer(Fixture fixture) {
-        return fixture.getBody().getUserData() instanceof Player;
-    }
-
-    private boolean isEntity(Fixture fixture) {
-        return fixture.getBody().getUserData() instanceof EnemyEntity;
-    }
+    public void postSolve(Contact contact, ContactImpulse impulse) {}
 }
