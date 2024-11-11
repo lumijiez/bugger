@@ -111,8 +111,10 @@
   >     }
   >     // ... other code
   > 
-  >     
-  >     
+  >     public void render() {
+  >         Sprite spriteToRender = flyweight.getSprite();
+  >         // ... other code ...
+  >     }
   > }
   > ```
   >
