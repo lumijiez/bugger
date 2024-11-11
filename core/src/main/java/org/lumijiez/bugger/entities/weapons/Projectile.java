@@ -1,27 +1,35 @@
 package org.lumijiez.bugger.entities.weapons;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import org.lumijiez.bugger.Bugger;
 import org.lumijiez.bugger.entities.Entity;
+import org.lumijiez.bugger.pools.ProjectileFlyweight;
+
+import static org.lumijiez.bugger.pools.ProjectileFlyweight.ENEMY_TEXTURE;
+import static org.lumijiez.bugger.pools.ProjectileFlyweight.PLAYER_TEXTURE;
 
 public class Projectile extends Entity {
-    private static final String ENEMY_TEXTURE = "images/enemyblaze.png";
-    private static final String PLAYER_TEXTURE = "images/blaze.png";
-
     protected float timeAlive = 0f;
     protected boolean isEnemy;
-    protected float speed = 5000f;
+    protected float speed;
+    private final ProjectileFlyweight flyweight;
 
     public Projectile(World world, boolean isEnemy) {
         super(world, isEnemy ? ENEMY_TEXTURE : PLAYER_TEXTURE, 5f);
+        this.flyweight = ProjectileFlyweight.get(isEnemy);
         this.isEnemy = isEnemy;
+        this.speed = flyweight.getDefaultSpeed();
         this.body = createBody(0, 0);
     }
 
     public Projectile(World world, Vector2 position, Vector2 direction, boolean isEnemy) {
         super(world, isEnemy ? ENEMY_TEXTURE : PLAYER_TEXTURE, 5f);
+        this.flyweight = ProjectileFlyweight.get(isEnemy);
         Vector2 offsetPosition = position.cpy().add(direction.nor().scl(5f + 1f));
         this.isEnemy = isEnemy;
+        this.speed = flyweight.getDefaultSpeed();
         this.body = createBody(offsetPosition.x, offsetPosition.y);
         this.body.setTransform(offsetPosition, (float) (direction.angleRad() + Math.toRadians(270f)));
         this.body.setLinearVelocity(direction.nor().scl(speed));
@@ -30,6 +38,7 @@ public class Projectile extends Entity {
 
     public Projectile(World world, Vector2 position, Vector2 direction, boolean isEnemy, float speed) {
         super(world, isEnemy ? ENEMY_TEXTURE : PLAYER_TEXTURE, 5f);
+        this.flyweight = ProjectileFlyweight.get(isEnemy);
         Vector2 offsetPosition = position.cpy().add(direction.nor().scl(5f + 1f));
         this.isEnemy = isEnemy;
         this.speed = speed;
@@ -48,7 +57,7 @@ public class Projectile extends Entity {
 
         Body body = world.createBody(bodyDef);
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(size / 2, size + 5);
+        shape.setAsBox(flyweight.getSize() / 2, flyweight.getSize() + 5);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -58,6 +67,7 @@ public class Projectile extends Entity {
         shape.dispose();
         return body;
     }
+
 
     public void init(Vector2 position, Vector2 direction, boolean isEnemy) {
         this.isEnemy = isEnemy;
@@ -87,7 +97,15 @@ public class Projectile extends Entity {
     }
 
     public void render() {
-        super.render(0, 5);
+        Sprite spriteToRender = flyweight.getSprite();
+        spriteToRender.setOrigin(flyweight.getSize() / 2, flyweight.getSize() / 2);
+        spriteToRender.setSize(flyweight.getSize(), flyweight.getSize() + 5);
+        spriteToRender.setPosition(body.getPosition().x - flyweight.getSize() / 2,
+            body.getPosition().y - flyweight.getSize() / 2);
+        spriteToRender.setRotation(body.getAngle() * (180f / (float) Math.PI));
+        Bugger.spriteBatch.begin();
+        spriteToRender.draw(Bugger.spriteBatch);
+        Bugger.spriteBatch.end();
     }
 
     @Override

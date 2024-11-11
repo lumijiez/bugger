@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import org.lumijiez.bugger.Bugger;
-import org.lumijiez.bugger.entities.Player;
+import org.lumijiez.bugger.entities.player.Player;
 
 public class ParticleHandler {
     private static ParticleHandler instance;

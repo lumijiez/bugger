@@ -1,4 +1,4 @@
-package org.lumijiez.bugger.util;
+package org.lumijiez.bugger.util.functional;
 
 import org.lumijiez.bugger.entities.Entity;
 import org.lumijiez.bugger.entities.EntityType;

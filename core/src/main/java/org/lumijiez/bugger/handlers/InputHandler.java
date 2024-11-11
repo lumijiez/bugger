@@ -3,7 +3,7 @@ package org.lumijiez.bugger.handlers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
-import org.lumijiez.bugger.entities.Player;
+import org.lumijiez.bugger.entities.player.Player;
 
 public class InputHandler {
     private static InputHandler instance;
@@ -24,6 +24,10 @@ public class InputHandler {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.X)) {
             InterfaceHandler.getInstance().toggleDebug();
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Gdx.app.exit();
         }
 
         if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {

@@ -1,4 +1,4 @@
-package org.lumijiez.bugger.entities;
+package org.lumijiez.bugger.entities.player;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.math.Vector2;
+import org.lumijiez.bugger.entities.Entity;
 import org.lumijiez.bugger.handlers.CameraHandler;
 
 import static org.lumijiez.bugger.Bugger.shapeRenderer;

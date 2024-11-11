@@ -1,4 +1,4 @@
-package org.lumijiez.bugger.util;
+package org.lumijiez.bugger.util.functional;
 
 @FunctionalInterface
 public interface CollisionAction {

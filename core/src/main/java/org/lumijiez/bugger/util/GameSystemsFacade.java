@@ -3,7 +3,7 @@ package org.lumijiez.bugger.util;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import org.lumijiez.bugger.Bugger;
-import org.lumijiez.bugger.entities.Player;
+import org.lumijiez.bugger.entities.player.Player;
 import org.lumijiez.bugger.handlers.*;
 
 import static org.lumijiez.bugger.Bugger.spriteBatch;

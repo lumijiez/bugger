@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import org.lumijiez.bugger.entities.Player;
+import org.lumijiez.bugger.entities.player.Player;
 import org.lumijiez.bugger.entities.weapons.Projectile;
 import org.lumijiez.bugger.pools.ProjectilePool;
 

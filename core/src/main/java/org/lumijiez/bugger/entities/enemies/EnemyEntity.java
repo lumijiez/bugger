@@ -2,46 +2,45 @@ package org.lumijiez.bugger.entities.enemies;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import org.lumijiez.bugger.Bugger;
 import org.lumijiez.bugger.entities.Entity;
-import org.lumijiez.bugger.entities.Player;
-import org.lumijiez.bugger.handlers.EnemyProjectileHandler;
+import org.lumijiez.bugger.entities.enemies.behaviors.Behaviors;
+import org.lumijiez.bugger.entities.enemies.behaviors.EnemyBehavior;
+import org.lumijiez.bugger.entities.enemies.types.EnemyType;
+import org.lumijiez.bugger.util.data.TripleInt;
+
+import java.util.Random;
+
 
 public class EnemyEntity extends Entity {
-    private float shootTimer = 0.0f;
+    private static final Random random = new Random();
+    protected EnemyBehavior behavior;
+    protected EnemyType type;
 
-    public EnemyEntity(World world, String texturePath, float size) {
-        super(world, texturePath, size);
+    public EnemyEntity(World world, EnemyType type, Behaviors behaviorType, Vector2 playerPosition, TripleInt options) {
+        super(world, type.getTexturePath(), type.getSize());
+        this.type = type;
+        this.behavior = behaviorType.createBehavior(options.one(), options.two(), options.thr());
+        initializePosition(playerPosition);
+        behavior.init(this);
+    }
+
+    private void initializePosition(Vector2 playerPosition) {
+        float angle = random.nextFloat() * 2 * (float) Math.PI;
+        float spawnX = playerPosition.x + (float) Math.cos(angle) * (type.getSpawnRadius() + type.getSize());
+        float spawnY = playerPosition.y + (float) Math.sin(angle) * (type.getSpawnRadius() + type.getSize());
+        this.body = createBody(spawnX, spawnY);
+        this.body.setUserData(this);
     }
 
     public void update() {
-        Vector2 playerPos = Player.getInstance().getPosition();
-        follow(playerPos);
-    }
-
-    private void follow(Vector2 playerPos) {
-        Vector2 direction = playerPos.cpy().sub(body.getPosition()).nor();
-        float speed = 10f;
-        body.setLinearVelocity(direction.scl(speed));
-
-        float angle = direction.angleDeg() + 270f;
-        body.setTransform(body.getPosition(), angle * (float) Math.PI / 180f);
-
-        shootTimer += Bugger.deltaTime;
-
-        float shootCooldown = 2.0f;
-        if (shootTimer >= shootCooldown) {
-            EnemyProjectileHandler.getInstance().shootEnemyProjectile(this.body.getPosition(), 50f);
-            shootTimer = 0.0f;
+        if (behavior != null) {
+            behavior.update(this);
         }
     }
 
     public void cycle() {
         update();
-        render();
-    }
-
-    public void render() {
-        super.render(0,0);
+        render(0, 0);
     }
 }
+

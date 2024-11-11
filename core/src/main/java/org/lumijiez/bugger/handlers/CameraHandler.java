@@ -3,7 +3,7 @@ package org.lumijiez.bugger.handlers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import org.lumijiez.bugger.Bugger;
-import org.lumijiez.bugger.entities.Player;
+import org.lumijiez.bugger.entities.player.Player;
 
 public class CameraHandler {
     private static CameraHandler instance;
@@ -12,11 +12,11 @@ public class CameraHandler {
     private final OrthographicCamera uiCam;
 
     private CameraHandler() {
-        cam = new OrthographicCamera(160, 90);
+        cam = new OrthographicCamera((float) (Gdx.graphics.getWidth() / 3), (float) (Gdx.graphics.getHeight() / 3));
         cam.position.set(Player.getInstance().getPosition().x / 2f, Player.getInstance().getPosition().y / 2f, 0);
         cam.update();
 
-        uiCam = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        uiCam = new OrthographicCamera((float) (Gdx.graphics.getWidth() * 1.5), (float) (Gdx.graphics.getHeight() * 1.5));
         uiCam.position.set(uiCam.viewportWidth / 2, uiCam.viewportHeight / 2, 0);
         uiCam.update();
     }

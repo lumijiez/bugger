@@ -18,6 +18,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void resize(int w, int h) {
+        bugger.resize(w, h);
     }
 
     @Override

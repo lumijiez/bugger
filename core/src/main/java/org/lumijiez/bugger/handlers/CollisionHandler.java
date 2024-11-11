@@ -1,13 +1,12 @@
 package org.lumijiez.bugger.handlers;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.*;
 import org.lumijiez.bugger.Bugger;
-import org.lumijiez.bugger.entities.Player;
+import org.lumijiez.bugger.entities.player.Player;
 import org.lumijiez.bugger.entities.enemies.EnemyEntity;
 import org.lumijiez.bugger.entities.weapons.Projectile;
-import org.lumijiez.bugger.util.CollisionAction;
-import org.lumijiez.bugger.util.CollisionPair;
+import org.lumijiez.bugger.util.functional.CollisionAction;
+import org.lumijiez.bugger.util.data.CollisionPair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +47,11 @@ public class CollisionHandler implements ContactListener {
         ParticleHandler instance = ParticleHandler.getInstance();
         Player player = Player.getInstance();
 
+        float viewWidth = CameraHandler.getInstance().getUICamera().viewportWidth;
+        float viewHeight = CameraHandler.getInstance().getUICamera().viewportHeight;
+
         instance.playSmallBoom(player.getPosition().x, player.getPosition().y);
-        instance.playHit(Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 60);
+        instance.playHit( viewWidth - 100, viewHeight - 60);
     }
 
     private void handleEnemyHit(Projectile ray, EnemyEntity enemy) {
