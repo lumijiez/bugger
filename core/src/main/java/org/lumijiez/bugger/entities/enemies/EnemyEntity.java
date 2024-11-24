@@ -42,5 +42,9 @@ public class EnemyEntity extends Entity {
         update();
         render(0, 0);
     }
+
+    public void setBehavior(Behaviors behavior, float param1, float param2, float param3) {
+        this.behavior = behavior.createBehavior(param1, param2, param3);
+    }
 }
 

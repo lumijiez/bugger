@@ -3,6 +3,7 @@ package org.lumijiez.bugger.handlers;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+import org.lumijiez.bugger.entities.enemies.behaviors.Behaviors;
 import org.lumijiez.bugger.entities.player.Player;
 
 public class InputHandler {
@@ -28,6 +29,14 @@ public class InputHandler {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
+            EnemyHandler.getInstance().overrideBehaviorForExisting(Behaviors.DEFENSIVE);
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+            EnemyHandler.getInstance().overrideBehaviorForExisting(Behaviors.FOLLOW);
         }
 
         if (Gdx.input.isButtonJustPressed(Input.Buttons.RIGHT)) {
